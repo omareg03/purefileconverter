@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <meta name="description" content="{{ page_description }}">
+    {% if noindex %}
+    <meta name="robots" content="noindex, nofollow">
+    {% else %}
+    <link rel="canonical" href="{{ site_url }}{{ request.url.path }}">
+    {% endif %}
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 15 A35 35 0 0 1 85 50 L95 50 L80 70 L65 50 L75 50 A25 25 0 0 0 50 25 Z' fill='%232563eb'/%3E%3Cpath d='M50 85 A35 35 0 0 1 15 50 L5 50 L20 30 L35 50 L25 50 A25 25 0 0 0 50 75 Z' fill='%2316a34a'/%3E%3C/svg%3E'>
+
+    <!-- Performance: preconnect to Font Awesome CDN -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:site_name" content="PureFileConverter">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ page_title }}">
+    <meta property="og:description" content="{{ page_description }}">
+    <meta property="og:url" content="{{ site_url }}{{ request.url.path }}">
+    <meta property="og:image" content="{{ site_url }}/static/og-image.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_title }}">
+    <meta name="twitter:description" content="{{ page_description }}">
+    <meta name="twitter:image" content="{{ site_url }}/static/og-image.svg">
+
+    <link href="/static/tailwind.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    {% if adsense_client_id %}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}" crossorigin="anonymous"></script>
+    {% endif %}
+    {% for block in jsonld_blocks or [] %}
+    <script type="application/ld+json">{{ block|safe }}</script>
+    {% endfor %}
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm py-4">
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="font-bold text-2xl flex items-center gap-2">
+                <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M50 15 A35 35 0 0 1 85 50 L95 50 L80 70 L65 50 L75 50 A25 25 0 0 0 50 25 Z" fill="#2563eb" />
+                  <path d="M50 85 A35 35 0 0 1 15 50 L5 50 L20 30 L35 50 L25 50 A25 25 0 0 0 50 75 Z" fill="#16a34a" />
+                </svg>
+                <span class="text-blue-600">PureFile<span class="text-green-600">Converter</span></span>
+            </a>
+            <div class="flex items-center gap-5 text-sm font-medium text-gray-600">
+                <a href="/#tools" class="hover:text-blue-600">All Tools</a>
+                <a href="/blog" class="hover:text-blue-600">Blog</a>
+                <a href="/about" class="hover:text-blue-600">About</a>
+                <a href="/contact" class="hover:text-blue-600">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center pt-12 px-4 pb-12">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white text-center py-6 text-gray-500 text-sm border-t mt-auto">
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-3">
+            <a href="/about" class="hover:text-blue-600">About</a>
+            <a href="/blog" class="hover:text-blue-600">Blog</a>
+            <a href="/privacy" class="hover:text-blue-600">Privacy Policy</a>
+            <a href="/terms" class="hover:text-blue-600">Terms of Service</a>
+            <a href="/contact" class="hover:text-blue-600">Contact</a>
+        </div>
+        &copy; {{ current_year }} PureFileConverter. Built for fast, free utility.
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

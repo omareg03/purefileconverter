@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-4xl font-extrabold text-green-600 mb-4 text-center"><i class="fa-solid fa-circle-check mr-3"></i>Your file is ready!</h1>
+        <p class="text-gray-600 mb-8 text-center max-w-xl text-lg">Your file <strong>{{ filename }}</strong> has been successfully converted and is ready for download.</p>
+
+        <!-- Google Ad Placeholder (Top) -->
+        <div class="w-full max-w-3xl h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mb-8 rounded">
+            [ Google AdSense Banner Placeholder ]
+        </div>
+
+        <div class="bg-white p-10 rounded-xl shadow-lg w-full max-w-xl border border-gray-100 text-center">
+            <a href="/api/download/{{ file_id }}?filename={{ filename }}" class="inline-flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-lg transition shadow-md text-xl mb-4" id="downloadBtn">
+                <i class="fa-solid fa-download mr-3"></i> Download File
+            </a>
+            <p class="text-sm text-gray-400">File will be automatically deleted from our servers after download to protect your privacy.</p>
+        </div>
+
+        <!-- Google Ad Placeholder (Bottom) -->
+        <div class="w-full max-w-3xl h-64 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mt-12 mb-8 rounded">
+            [ Google AdSense Large Banner Placeholder ]
+        </div>
+
+        <div class="mt-4">
+            <a href="/" class="text-blue-600 hover:underline font-medium"><i class="fa-solid fa-arrow-left mr-2"></i>Convert another file</a>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Disable the button after a short delay so they don't double click
+        const btn = document.getElementById('downloadBtn');
+        btn.addEventListener('click', (e) => {
+            setTimeout(() => {
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.innerHTML = '<i class="fa-solid fa-check mr-3"></i> Downloaded';
+                btn.onclick = (event) => event.preventDefault();
+            }, 500);
+        });
+</script>
+{% endblock %}

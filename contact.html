@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl w-full bg-white p-8 rounded shadow text-gray-800">
+    <h1 class="text-3xl font-bold mb-4">Contact Us</h1>
+    <p class="mb-4">Have questions or feedback? We'd love to hear from you.</p>
+    <p class="mb-4">You can reach out to us directly at:</p>
+    <p class="text-xl font-medium text-blue-600 mb-6">
+        <a href="mailto:{{ contact_email|default('support@cleanfileconverter.com') }}">
+            {{ contact_email|default('support@cleanfileconverter.com') }}
+        </a>
+    </p>
+    <p class="text-gray-500 text-sm">We typically respond within 24-48 hours during business days.</p>
+</div>
+{% endblock %}

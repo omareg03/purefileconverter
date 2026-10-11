@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<style>
+.article-content { max-width: 720px; margin: 0 auto; line-height: 1.8; }
+.article-content h2 { font-size: 1.875rem; font-weight: 700; color: #1f2937; margin-top: 2rem; margin-bottom: 0.75rem; }
+.article-content h3 { font-size: 1.5rem; font-weight: 600; color: #374151; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.article-content p { margin-bottom: 1rem; color: #4b5563; }
+.article-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; color: #4b5563; }
+.article-content ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; color: #4b5563; }
+.article-content li { margin-bottom: 0.5rem; }
+.article-content .lead { font-size: 1.125rem; color: #6b7280; margin-bottom: 1.5rem; }
+.article-content .callout { background: #eff6ff; border-left: 4px solid #2563eb; padding: 1rem 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+.article-content .callout p { margin: 0; color: #1e40af; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="article-content w-full">
+    <a href="/blog" class="text-blue-600 hover:underline mb-4 inline-block text-sm font-medium"><i class="fa-solid fa-arrow-left mr-1"></i> Blog</a>
+
+    <div class="flex items-center gap-3 mb-2 text-sm text-gray-500">
+        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">{{ category }}</span>
+        <span>{{ published }}</span>
+        <span>·</span>
+        <span>{{ reading_time }} min read</span>
+    </div>
+
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-3">{{ title }}</h1>
+    <p class="lead">{{ description }}</p>
+
+    <!-- Ad: Top of article -->
+    <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mb-6 rounded">
+        [ Advertisement ]
+    </div>
+
+    <div class="prose prose-lg max-w-none">
+        {% for blk in content_blocks %}
+            {% if blk.type == "paragraph" %}
+                <p>{{ blk.text }}</p>
+            {% elif blk.type == "heading" %}
+                <h2>{{ blk.text }}</h2>
+            {% elif blk.type == "subheading" %}
+                <h3>{{ blk.text }}</h3>
+            {% elif blk.type == "list" %}
+                <ul>
+                    {% for item in blk.entries %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            {% elif blk.type == "ordered" %}
+                <ol>
+                    {% for item in blk.entries %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ol>
+            {% elif blk.type == "callout" %}
+                <div class="callout"><p>{{ blk.text }}</p></div>
+            {% endif %}
+
+            {% if loop.index0 == 3 %}
+            <!-- Ad: In-content (after 4th block) -->
+            <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm my-6 rounded">
+                [ Advertisement ]
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Ad: Bottom of article -->
+    <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mt-8 rounded">
+        [ Advertisement ]
+    </div>
+
+    <!-- CTA: Related tool -->
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Try {{ tool_name }} Free</h3>
+        <p class="text-gray-600 mb-4">No signup. No watermark. Files auto-deleted after 1 hour.</p>
+        <a href="{{ tool_link }}" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg transition shadow-md">
+            <i class="fa-solid fa-arrow-right mr-2"></i> Use the Tool
+        </a>
+    </div>
+
+    <!-- Related articles -->
+    {% if related_articles %}
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Related Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for ra in related_articles %}
+            <a href="/blog/{{ ra.slug }}" class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md border border-gray-100 transition">
+                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">{{ ra.category }}</span>
+                <h3 class="font-bold text-gray-800 text-base mt-2">{{ ra.title }}</h3>
+                <p class="text-gray-500 text-sm mt-1">{{ ra.description }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

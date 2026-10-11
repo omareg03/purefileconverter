@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-3xl">
+            <a href="/" class="text-blue-600 hover:underline mb-6 inline-block"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Tools</a>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 relative">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-{{ tool.color }}-100 text-{{ tool.color }}-600 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto">
+                        <i class="fa-solid {{ tool.icon }}"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ tool.title }}</h1>
+                    <p class="text-gray-600 text-lg">{{ tool.description }}</p>
+                </div>
+                
+                <div id="dropzone" class="border-2 border-dashed border-blue-300 rounded-lg p-16 text-center hover:bg-blue-50 transition cursor-pointer mb-6">
+                    <div class="text-5xl text-blue-500 mb-4"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <p class="text-gray-600 font-medium text-xl">Drag & Drop your file here</p>
+                    <p class="text-gray-400 text-base mt-2">or <span class="text-blue-600 underline">Select File</span></p>
+                    <input type="file" id="fileInput" class="hidden" accept="{{ tool.accept }}">
+                </div>
+
+                {% if tool.has_format_selector %}
+                <div id="imageFormatSelector" class="mb-6 flex justify-center items-center gap-3">
+                    <label class="text-sm text-gray-600 font-medium">Convert to:</label>
+                    <select id="formatSelect" class="border border-gray-300 rounded p-2 text-sm font-bold text-gray-700 focus:ring-blue-500">
+                        <option value="jpg">JPG</option>
+                        <option value="png">PNG</option>
+                        <option value="webp">WebP</option>
+                    </select>
+                </div>
+                {% endif %}
+
+                {% if tool.has_resize_inputs %}
+                <div id="resizeInputs" class="mb-6 flex justify-center items-center gap-3">
+                    <label class="text-sm text-gray-600 font-medium">Width:</label>
+                    <input type="number" id="resizeWidth" value="800" class="border border-gray-300 rounded p-2 text-sm focus:ring-blue-500 w-24">
+                    <label class="text-sm text-gray-600 font-medium">Height:</label>
+                    <input type="number" id="resizeHeight" value="600" class="border border-gray-300 rounded p-2 text-sm focus:ring-blue-500 w-24">
+                </div>
+                {% endif %}
+
+                {% if tool.has_quality_input %}
+                <div id="qualityInput" class="mb-6 flex justify-center items-center gap-3">
+                    <label class="text-sm text-gray-600 font-medium">Quality (1-100):</label>
+                    <input type="number" id="qualityValue" value="50" min="1" max="100" class="border border-gray-300 rounded p-2 text-sm focus:ring-blue-500 w-24">
+                </div>
+                {% endif %}
+
+                <div id="loadingIndicator" class="hidden text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
+                    <p class="text-gray-600 font-medium text-lg">Processing your file...</p>
+                </div>
+
+                <div id="errorMsg" class="hidden bg-red-50 text-red-600 p-4 rounded-lg text-center mb-4 text-sm font-medium border border-red-200"></div>
+
+            </div>
+            
+            <!-- Google Ad Placeholder (Bottom) -->
+            <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mt-12 rounded">
+                [ Google AdSense Banner Placeholder ]
+            </div>
+
+            {% if related_tools %}
+            <!-- Related Tools: internal linking for SEO -->
+            <div class="mt-12">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Related {{ tool.category }}</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {% for rt in related_tools %}
+                    <a href="/{{ rt.slug }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md border border-gray-100 transition flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg {{ rt.badge }}">
+                            <i class="fa-solid {{ rt.icon }}"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-sm">{{ rt.title }}</h3>
+                            <p class="text-gray-500 text-xs">{{ rt.description }}</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- FAQ Section: SEO content + FAQPage structured data -->
+            <div class="mt-12">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    {% for q, a in faqs %}
+                    <details class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+                        <summary class="font-medium text-gray-700 cursor-pointer">{{ q }}</summary>
+                        <p class="text-gray-600 text-sm mt-3">{{ a }}</p>
+                    </details>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        // Drag and drop visuals
+        dropzone.addEventListener('click', () => fileInput.click());
+        
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('bg-blue-50', 'border-blue-500');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('bg-blue-50', 'border-blue-500');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('bg-blue-50', 'border-blue-500');
+            if (e.dataTransfer.files.length) {
+                processFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                processFile(e.target.files[0]);
+            }
+        });
+
+        async function processFile(file) {
+            errorMsg.classList.add('hidden');
+            dropzone.classList.add('hidden');
+            {% if tool.has_format_selector %}
+            if (document.getElementById('imageFormatSelector')) {
+                document.getElementById('imageFormatSelector').classList.add('hidden');
+            }
+            {% endif %}
+            {% if tool.has_resize_inputs %}
+            if (document.getElementById('resizeInputs')) {
+                document.getElementById('resizeInputs').classList.add('hidden');
+            }
+            {% endif %}
+            {% if tool.has_quality_input %}
+            if (document.getElementById('qualityInput')) {
+                document.getElementById('qualityInput').classList.add('hidden');
+            }
+            {% endif %}
+            loadingIndicator.classList.remove('hidden');
+
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            {% if tool.has_format_selector %}
+            if (document.getElementById('formatSelect')) {
+                formData.append('format', document.getElementById('formatSelect').value);
+            }
+            {% endif %}
+
+            {% if tool.has_resize_inputs %}
+            if (document.getElementById('resizeWidth') && document.getElementById('resizeHeight')) {
+                formData.append('width', document.getElementById('resizeWidth').value);
+                formData.append('height', document.getElementById('resizeHeight').value);
+            }
+            {% endif %}
+
+            {% if tool.has_quality_input %}
+            if (document.getElementById('qualityValue')) {
+                formData.append('quality', document.getElementById('qualityValue').value);
+            }
+            {% endif %}
+
+            try {
+                const response = await fetch('{{ tool.endpoint }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = `/download-page?file_id=${result.file_id}&filename=${encodeURIComponent(result.filename)}`;
+                } else {
+                    throw new Error(result.detail || 'Conversion failed');
+                }
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.classList.remove('hidden');
+                dropzone.classList.remove('hidden');
+                {% if tool.has_format_selector %}
+                if (document.getElementById('imageFormatSelector')) {
+                    document.getElementById('imageFormatSelector').classList.remove('hidden');
+                }
+                {% endif %}
+                {% if tool.has_resize_inputs %}
+                if (document.getElementById('resizeInputs')) {
+                    document.getElementById('resizeInputs').classList.remove('hidden');
+                }
+                {% endif %}
+                {% if tool.has_quality_input %}
+                if (document.getElementById('qualityInput')) {
+                    document.getElementById('qualityInput').classList.remove('hidden');
+                }
+                {% endif %}
+                loadingIndicator.classList.add('hidden');
+                
+                // Clear input
+                fileInput.value = '';
+            }
+        }
+</script>
+{% endblock %}
