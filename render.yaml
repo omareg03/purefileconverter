@@ -3,7 +3,7 @@ services:
     name: purefileconverter
     env: docker
     plan: free
-    autoDeploy: false
+    autoDeploy: true
     envVars:
       - key: MAX_UPLOAD_MB
         value: 10
