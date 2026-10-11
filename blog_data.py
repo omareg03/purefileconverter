@@ -417,7 +417,7 @@ BLOG_ARTICLES = {
             {"type": "paragraph", "text": "Simple and straightforward. Free with a 50 MB file limit. No signup needed but conversions can be slow and the site has significant advertising."},
             {"type": "heading", "text": "10. Zamzar"},
             {"type": "paragraph", "text": "One of the oldest online converters. Supports 1,200+ format conversions. Free tier limits files to 50 MB and you may wait in a queue. The paid plan starts at $9/month for larger files and faster processing."},
-            {"type": "affiliate", "title": "Need desktop software? Try Adobe Acrobat Pro", "description": "The industry standard for PDF editing and conversion. Amazon affiliate link.", "link": "https://www.amazon.com/Adobe-Acrobat-Pro-DC-Windows/dp/B01FDDZA6Q?tag=omareg03-20"},
+            {"type": "affiliate", "title": "Need desktop software? Try Adobe Acrobat Pro", "description": "The industry standard for PDF editing and conversion. Amazon affiliate link.", "link": "https://www.amazon.com/Adobe-Acrobat-Pro-DC-Windows/dp/B01FDDZA6Q?tag=purefileconverter20"},
             {"type": "heading", "text": "What to Look for in a Free File Converter"},
             {"type": "list", "entries": [
                 "No signup — you should be able to convert without creating an account.",
@@ -504,7 +504,7 @@ BLOG_ARTICLES = {
             {"type": "callout", "text": "Tip: If your PDF has selectable text and was generated from a Word document or text editor (not printed to PDF from a design tool), the conversion will be close to perfect. Scanned PDFs and complex layouts will always have some loss."},
             {"type": "heading", "text": "When Conversion Will Not Work"},
             {"type": "paragraph", "text": "If your PDF is a scanned image of paper — a photo of a document, not a text-based PDF — the conversion will produce images, not editable text. This is because the scanner captured a picture, not text. To get editable text from a scanned PDF, you need OCR (optical character recognition) software, which PureFileConverter does not currently run. For scanned documents, try Google Drive's built-in OCR or Adobe Acrobat's scan-to-text feature."},
-            {"type": "affiliate", "title": "Adobe Acrobat Pro — Best for Scanned PDFs", "description": "Includes OCR for scanned documents and advanced PDF editing. Amazon affiliate link.", "link": "https://www.amazon.com/Adobe-Acrobat-Pro-DC-Windows/dp/B01FDDZA6Q?tag=omareg03-20"},
+            {"type": "affiliate", "title": "Adobe Acrobat Pro — Best for Scanned PDFs", "description": "Includes OCR for scanned documents and advanced PDF editing. Amazon affiliate link.", "link": "https://www.amazon.com/Adobe-Acrobat-Pro-DC-Windows/dp/B01FDDZA6Q?tag=purefileconverter20"},
             {"type": "heading", "text": "The Honest Bottom Line"},
             {"type": "paragraph", "text": "No PDF to Word converter is perfect. The format difference between PDF and Word means some layout information is permanently lost in the PDF creation process. The best you can get is a clean text-based conversion where the content is editable, even if the positioning shifts slightly. PureFileConverter does this well — it preserves paragraphs, headings, tables, and images, even if exact pixel positions move."},
         ],
