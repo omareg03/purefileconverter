@@ -37,6 +37,13 @@
     {% if adsense_client_id %}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}" crossorigin="anonymous"></script>
     {% endif %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QL5VKVW6P7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QL5VKVW6P7');
+    </script>
     {% for block in jsonld_blocks or [] %}
     <script type="application/ld+json">{{ block|safe }}</script>
     {% endfor %}
