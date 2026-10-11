@@ -4,10 +4,12 @@
 <h1 class="text-4xl font-extrabold text-green-600 mb-4 text-center"><i class="fa-solid fa-circle-check mr-3"></i>Your file is ready!</h1>
         <p class="text-gray-600 mb-8 text-center max-w-xl text-lg">Your file <strong>{{ filename }}</strong> has been successfully converted and is ready for download.</p>
 
-        <!-- Google Ad Placeholder (Top) -->
+        {% if adsense_client_id %}
+        <!-- Google Ad (Top) -->
         <div class="w-full max-w-3xl h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mb-8 rounded">
-            [ Google AdSense Banner Placeholder ]
+            [ Advertisement ]
         </div>
+        {% endif %}
 
         <div class="bg-white p-10 rounded-xl shadow-lg w-full max-w-xl border border-gray-100 text-center">
             <a href="/api/download/{{ file_id }}?filename={{ filename }}" class="inline-flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-lg transition shadow-md text-xl mb-4" id="downloadBtn">
@@ -16,10 +18,12 @@
             <p class="text-sm text-gray-400">File will be automatically deleted from our servers after download to protect your privacy.</p>
         </div>
 
-        <!-- Google Ad Placeholder (Bottom) -->
+        {% if adsense_client_id %}
+        <!-- Google Ad (Bottom) -->
         <div class="w-full max-w-3xl h-64 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mt-12 mb-8 rounded">
-            [ Google AdSense Large Banner Placeholder ]
+            [ Advertisement ]
         </div>
+        {% endif %}
 
         <div class="mt-4">
             <a href="/" class="text-blue-600 hover:underline font-medium"><i class="fa-solid fa-arrow-left mr-2"></i>Convert another file</a>

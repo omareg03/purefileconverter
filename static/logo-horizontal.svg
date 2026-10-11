@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="80" viewBox="0 0 400 80">
+  <!-- Logo icon -->
+  <g transform="translate(10, 8) scale(0.64)">
+    <path d="M50 15 A35 35 0 0 1 85 50 L95 50 L80 70 L65 50 L75 50 A25 25 0 0 0 50 25 Z" fill="#2563eb"/>
+    <path d="M50 85 A35 35 0 0 1 15 50 L5 50 L20 30 L35 50 L25 50 A25 25 0 0 0 50 75 Z" fill="#16a34a"/>
+  </g>
+  <!-- Text -->
+  <text x="80" y="50" font-family="Arial, sans-serif" font-size="28" font-weight="bold">
+    <tspan fill="#2563eb">PureFile</tspan><tspan fill="#16a34a">Converter</tspan>
+  </text>
+</svg>
