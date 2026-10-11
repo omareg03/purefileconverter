@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg3)"/>
+  
+  <!-- Logo icon -->
+  <g transform="translate(270, 40) scale(1.2)">
+    <path d="M50 15 A35 35 0 0 1 85 50 L95 50 L80 70 L65 50 L75 50 A25 25 0 0 0 50 25 Z" fill="white" opacity="0.95"/>
+    <path d="M50 85 A35 35 0 0 1 15 50 L5 50 L20 30 L35 50 L25 50 A25 25 0 0 0 50 75 Z" fill="#4ade80"/>
+  </g>
+  
+  <!-- Brand -->
+  <text x="320" y="165" font-family="Arial, sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="white">PureFileConverter</text>
+  
+  <!-- Tagline -->
+  <text x="320" y="205" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#bfdbfe">12 free file conversion tools — no signup, no watermark</text>
+  
+  <!-- URL -->
+  <text x="320" y="245" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#93c5fd">purefileconverter.com</text>
+  
+  <!-- Feature badges -->
+  <g transform="translate(120, 275)">
+    <rect width="120" height="35" rx="17" fill="white" opacity="0.15"/>
+    <text x="60" y="23" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">Free</text>
+  </g>
+  <g transform="translate(260, 275)">
+    <rect width="120" height="35" rx="17" fill="white" opacity="0.15"/>
+    <text x="60" y="23" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">No Signup</text>
+  </g>
+  <g transform="translate(400, 275)">
+    <rect width="120" height="35" rx="17" fill="white" opacity="0.15"/>
+    <text x="60" y="23" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">Private</text>
+  </g>
+</svg>

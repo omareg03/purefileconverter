@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1278" height="884" viewBox="0 0 1278 884">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1278" height="884" fill="url(#bg2)"/>
+
+  <!-- Logo icon -->
+  <g transform="translate(539, 80) scale(2)">
+    <path d="M50 15 A35 35 0 0 1 85 50 L95 50 L80 70 L65 50 L75 50 A25 25 0 0 0 50 25 Z" fill="white" opacity="0.95"/>
+    <path d="M50 85 A35 35 0 0 1 15 50 L5 50 L20 30 L35 50 L25 50 A25 25 0 0 0 50 75 Z" fill="#4ade80"/>
+  </g>
+
+  <!-- Brand name -->
+  <text x="639" y="320" font-family="Arial, sans-serif" font-size="64" font-weight="bold" text-anchor="middle" fill="white">
+    PureFileConverter
+  </text>
+
+  <!-- Tagline -->
+  <text x="639" y="380" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#bfdbfe">
+    12 free file conversion tools — no signup, no watermark
+  </text>
+
+  <!-- Feature pills -->
+  <g transform="translate(339, 430)">
+    <rect width="180" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="90" y="33" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="white">No Signup</text>
+  </g>
+  <g transform="translate(549, 430)">
+    <rect width="180" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="90" y="33" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="white">No Watermark</text>
+  </g>
+  <g transform="translate(759, 430)">
+    <rect width="180" height="50" rx="25" fill="white" opacity="0.2"/>
+    <text x="90" y="33" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Auto-Delete</text>
+  </g>
+
+  <!-- Tool categories -->
+  <text x="639" y="560" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4ade80">12 TOOLS · 3 CATEGORIES</text>
+
+  <text x="250" y="620" font-family="Arial" font-size="22" font-weight="bold" text-anchor="middle" fill="#93c5fd">Document</text>
+  <text x="639" y="620" font-family="Arial" font-size="22" font-weight="bold" text-anchor="middle" fill="#86efac">Image</text>
+  <text x="1028" y="620" font-family="Arial" font-size="22" font-weight="bold" text-anchor="middle" fill="#d8b4fe">Media</text>
+
+  <text x="250" y="660" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">PDF to Word</text>
+  <text x="250" y="685" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">Word to PDF</text>
+  <text x="250" y="710" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">CSV to Excel</text>
+  <text x="250" y="735" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">Excel to PDF</text>
+
+  <text x="639" y="660" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">Image Converter</text>
+  <text x="639" y="685" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">Image to PDF</text>
+  <text x="639" y="710" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">Image Resizer</text>
+  <text x="639" y="735" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">Compress Image</text>
+
+  <text x="1028" y="660" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">MP4 to MP3</text>
+  <text x="1028" y="685" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">WAV to MP3</text>
+  <text x="1028" y="710" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">AVI to MP4</text>
+  <text x="1028" y="735" font-family="Arial" font-size="16" text-anchor="middle" fill="#bfdbfe">MP3 to MP4</text>
+
+  <!-- Footer -->
+  <text x="639" y="820" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#93c5fd">
+    purefileconverter.com — Free · Fast · Private
+  </text>
+</svg>
