@@ -58,6 +58,20 @@
                 </ol>
             {% elif blk.type == "callout" %}
                 <div class="callout"><p>{{ blk.text }}</p></div>
+            {% elif blk.type == "image" %}
+                <div class="my-6 text-center">
+                    <img src="{{ blk.src }}" alt="{{ blk.alt }}" class="rounded-xl shadow-md mx-auto max-w-full" loading="lazy" width="{{ blk.width }}" height="{{ blk.height }}">
+                    <p class="text-sm text-gray-400 mt-2">{{ blk.caption }}</p>
+                </div>
+            {% elif blk.type == "affiliate" %}
+                <div class="my-6 bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-center gap-4">
+                    <div class="text-3xl"><i class="fa-solid fa-star text-blue-600"></i></div>
+                    <div class="flex-grow">
+                        <p class="font-bold text-gray-800">{{ blk.title }}</p>
+                        <p class="text-sm text-gray-600">{{ blk.description }}</p>
+                    </div>
+                    <a href="{{ blk.link }}" target="_blank" rel="nofollow sponsored noopener" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2 rounded-lg whitespace-nowrap text-sm transition shadow-md">View Price</a>
+                </div>
             {% endif %}
 
             {% if loop.index0 == 3 and adsense_client_id %}
