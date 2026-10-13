@@ -1,9 +1,0 @@
-{# Ad slot: shows the grey placeholder until ADSENSE_CLIENT_ID is set.
-   When it is set, base.html injects the real AdSense script (Auto ads) and the placeholders disappear. #}
-{% macro ad_slot(extra_classes="h-24 mb-8") %}
-{% if not adsense_client_id %}
-<div class="w-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm rounded {{ extra_classes }}">
-    [ Google AdSense Banner Placeholder ]
-</div>
-{% endif %}
-{% endmacro %}

@@ -10,13 +10,6 @@
 <h1 class="text-4xl font-extrabold text-gray-900 mb-4 text-center">PureFileConverter Blog</h1>
 <p class="text-gray-600 mb-8 text-center max-w-2xl text-lg mx-auto">Guides, tutorials and tips for converting files — PDF, Word, Excel, images, audio and video. Learn the best free methods for every format.</p>
 
-{% if adsense_client_id %}
-<!-- Ad: Top -->
-<div class="w-full max-w-4xl h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mb-12 rounded">
-    [ Advertisement ]
-</div>
-{% endif %}
-
 <div class="w-full max-w-6xl">
     {% for cat_name, articles in categories %}
     <h2 class="text-2xl font-bold text-blue-700 mb-6 border-b-2 border-blue-200 pb-2">{{ cat_name }}</h2>

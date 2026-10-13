@@ -29,13 +29,6 @@
     <h1 class="text-4xl font-extrabold text-gray-900 mb-3">{{ title }}</h1>
     <p class="lead">{{ description }}</p>
 
-    {% if adsense_client_id %}
-    <!-- Ad: Top of article -->
-    <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mb-6 rounded">
-        [ Advertisement ]
-    </div>
-    {% endif %}
-
     <div class="prose prose-lg max-w-none">
         {% for blk in content_blocks %}
             {% if blk.type == "paragraph" %}
@@ -74,21 +67,11 @@
                 </div>
             {% endif %}
 
-            {% if loop.index0 == 3 and adsense_client_id %}
-            <!-- Ad: In-content (after 4th block) -->
-            <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm my-6 rounded">
-                [ Advertisement ]
-            </div>
+            {% if loop.index0 == 3 %}
+            <!-- Auto ads will inject in-content ads here after review -->
             {% endif %}
         {% endfor %}
     </div>
-
-    {% if adsense_client_id %}
-    <!-- Ad: Bottom of article -->
-    <div class="w-full h-24 bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-500 text-sm mt-8 rounded">
-        [ Advertisement ]
-    </div>
-    {% endif %}
 
     <!-- CTA: Related tool -->
     <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
