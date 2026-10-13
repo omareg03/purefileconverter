@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="400" viewBox="0 0 720 400">
+  <rect width="720" height="400" fill="#f8fafc"/>
+  <rect x="0" y="0" width="720" height="8" fill="#9333ea"/>
+  <circle cx="360" cy="120" r="48" fill="#9333ea" opacity="0.1"/>
+  <text x="360" y="140" font-family="Arial" font-size="48" text-anchor="middle">🎵</text>
+  <text x="360" y="220" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#1f2937">How to Extract Audio from MP4 Video as M</text>
+  <text x="360" y="255" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6b7280">PureFileConverter — free online file conversion</text>
+  <rect x="260" y="300" width="200" height="6" rx="3" fill="#9333ea" opacity="0.3"/>
+</svg>

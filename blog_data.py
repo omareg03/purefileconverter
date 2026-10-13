@@ -15,6 +15,7 @@ BLOG_ARTICLES = {
         "tool_link": "/pdf-to-word",
         "content_blocks": [
             {"type": "paragraph", "text": "Converting a PDF file to an editable Word document is one of the most common tasks in any office. Whether you received a contract, a report, or a form that you need to edit, the process should be simple, fast, and free. This guide walks you through exactly how to convert PDF to Word online — without installing any software and without paying a cent."},
+            {"type": "image", "src": "/static/pdf-to-word-converter-tool.svg", "alt": "PDF to Word converter showing a PDF document transforming into an editable Word document", "width": "720", "height": "400", "caption": "PDF to Word converter showing a PDF document transforming into an editable Word document"},
             {"type": "paragraph", "text": "PureFileConverter's PDF to Word tool extracts the text, tables, and images from your PDF and rebuilds them into a clean .docx file that opens in Microsoft Word, Google Docs, or LibreOffice. Here is everything you need to know."},
             {"type": "heading", "text": "Why Convert PDF to Word?"},
             {"type": "paragraph", "text": "PDF files are designed for sharing and viewing — not for editing. The format locks content in place so it looks the same on every device. But when you need to fix a typo, update a number, or rewrite a paragraph, you need an editable format. Word documents (.docx) let you change text, reformat paragraphs, add comments, and collaborate with others."},
@@ -58,6 +59,7 @@ BLOG_ARTICLES = {
         "tool_link": "/word-to-pdf",
         "content_blocks": [
             {"type": "paragraph", "text": "Converting a Word document to PDF is essential when you need to share a file that looks the same on every device — whether it is a resume, a contract, a report, or a school assignment. PDF preserves your formatting, fonts, and layout so nothing shifts when someone else opens it. This guide shows you how to do it for free, online, in seconds."},
+            {"type": "image", "src": "/static/word-to-pdf-converter-tool.svg", "alt": "Word to PDF converter showing a DOCX document converting to a print-ready PDF file", "width": "720", "height": "400", "caption": "Word to PDF converter showing a DOCX document converting to a print-ready PDF file"},
             {"type": "heading", "text": "Why Convert Word to PDF?"},
             {"type": "paragraph", "text": "Word documents look different depending on who opens them. Fonts may be missing, margins may shift, and page breaks may land in different places. PDF eliminates all of that — it freezes your document exactly as you designed it. That is why employers, schools, and clients almost always ask for PDF."},
             {"type": "list", "entries": [
@@ -100,6 +102,7 @@ BLOG_ARTICLES = {
         "tool_link": "/csv-to-excel",
         "content_blocks": [
             {"type": "paragraph", "text": "CSV (comma-separated values) is the universal format for exporting data from databases, analytics tools, and web applications. But raw CSV files are plain text with no formatting, no formulas, and no column types. Converting CSV to Excel (.xlsx) gives you styled columns, number formatting, filters, and the full power of spreadsheet software."},
+            {"type": "image", "src": "/static/csv-to-excel-converter-tool.svg", "alt": "CSV to Excel converter showing raw data transforming into a formatted spreadsheet", "width": "720", "height": "400", "caption": "CSV to Excel converter showing raw data transforming into a formatted spreadsheet"},
             {"type": "heading", "text": "Why Convert CSV to Excel?"},
             {"type": "list", "entries": [
                 "Formatting — Excel applies column widths, borders, and cell styles automatically.",
@@ -135,6 +138,7 @@ BLOG_ARTICLES = {
         "tool_link": "/image-resizer",
         "content_blocks": [
             {"type": "paragraph", "text": "Resizing images is one of the most common tasks for anyone who works with photos, graphics, or web content. Whether you need a specific size for a social media profile, a website banner, or an email template, getting the dimensions right without making the image blurry or stretched is key."},
+            {"type": "image", "src": "/static/image-resizer-tool.svg", "alt": "Online image resizer showing a photo being scaled to new pixel dimensions", "width": "720", "height": "400", "caption": "Online image resizer showing a photo being scaled to new pixel dimensions"},
             {"type": "heading", "text": "Why Resize Images?"},
             {"type": "list", "entries": [
                 "Web performance — smaller images load faster and improve page speed scores.",
@@ -181,6 +185,7 @@ BLOG_ARTICLES = {
         "tool_link": "/compress-image",
         "content_blocks": [
             {"type": "paragraph", "text": "Large image files slow down websites, eat bandwidth, and frustrate users. Compressing JPG images reduces file size dramatically — often by 50-80% — with little to no visible quality loss. This guide shows you how to compress images for free and explains the right settings to use."},
+            {"type": "image", "src": "/static/compress-jpg-image-tool.svg", "alt": "JPG image compressor showing file size reduction with a compression slider", "width": "720", "height": "400", "caption": "JPG image compressor showing file size reduction with a compression slider"},
             {"type": "heading", "text": "Why Compress Images?"},
             {"type": "list", "entries": [
                 "Faster page loads — compressed images download in a fraction of the time.",
@@ -218,6 +223,7 @@ BLOG_ARTICLES = {
         "tool_link": "/image-converter",
         "content_blocks": [
             {"type": "paragraph", "text": "PNG is great for graphics with transparency, text, and sharp edges, but it produces large files for photographs. Converting PNG to JPG can reduce file size by 50-90% with minimal quality loss for photo content. This guide explains how to convert PNG to JPG and what to expect."},
+            {"type": "image", "src": "/static/png-to-jpg-converter-tool.svg", "alt": "PNG to JPG converter showing an image format conversion with transparency flattening", "width": "720", "height": "400", "caption": "PNG to JPG converter showing an image format conversion with transparency flattening"},
             {"type": "heading", "text": "Why Convert PNG to JPG?"},
             {"type": "list", "entries": [
                 "Smaller file size — JPG compresses photographic content far better than PNG.",
@@ -252,6 +258,7 @@ BLOG_ARTICLES = {
         "tool_link": "/mp4-to-mp3",
         "content_blocks": [
             {"type": "paragraph", "text": "Sometimes you have a video but you only need the audio — a lecture, a podcast recording, a music video, or an interview. Extracting the audio track from an MP4 and saving it as an MP3 is straightforward with the right tool. This guide shows you how."},
+            {"type": "image", "src": "/static/mp4-to-mp3-audio-extractor.svg", "alt": "MP4 to MP3 audio extractor showing a video file separating into an audio track", "width": "720", "height": "400", "caption": "MP4 to MP3 audio extractor showing a video file separating into an audio track"},
             {"type": "heading", "text": "Why Extract Audio from Video?"},
             {"type": "list", "entries": [
                 "Podcasts — record or download video and extract just the audio for distribution.",
@@ -288,6 +295,7 @@ BLOG_ARTICLES = {
         "tool_link": "/wav-to-mp3",
         "content_blocks": [
             {"type": "paragraph", "text": "WAV files contain uncompressed audio — they sound exactly like the original recording, but they are huge. A 3-minute song in WAV can be 30-50 MB, while the same song in MP3 might be 3-5 MB. Converting WAV to MP3 gives you a file that is 10× smaller with quality that is nearly indistinguishable for most listeners."},
+            {"type": "image", "src": "/static/wav-to-mp3-converter-tool.svg", "alt": "WAV to MP3 converter showing uncompressed audio compressing to a smaller file", "width": "720", "height": "400", "caption": "WAV to MP3 converter showing uncompressed audio compressing to a smaller file"},
             {"type": "heading", "text": "Why Convert WAV to MP3?"},
             {"type": "list", "entries": [
                 "File size — MP3 files are 10× smaller than WAV files for the same audio.",
@@ -324,6 +332,7 @@ BLOG_ARTICLES = {
         "tool_link": "/avi-to-mp4",
         "content_blocks": [
             {"type": "paragraph", "text": "AVI was the standard video format in the early 2000s, but it has been replaced by MP4 almost everywhere. Modern phones, browsers, streaming platforms, and editing tools prefer MP4 because it uses efficient H.264 video and AAC audio codecs. If you have old AVI files, converting them to MP4 makes them playable on any device."},
+            {"type": "image", "src": "/static/avi-to-mp4-converter-tool.svg", "alt": "AVI to MP4 converter showing a legacy video file converting to modern H.264 format", "width": "720", "height": "400", "caption": "AVI to MP4 converter showing a legacy video file converting to modern H.264 format"},
             {"type": "heading", "text": "Why Convert AVI to MP4?"},
             {"type": "list", "entries": [
                 "Universal playback — MP4 plays on iPhones, Android, browsers, smart TVs, and every modern device.",
@@ -360,6 +369,7 @@ BLOG_ARTICLES = {
         "tool_link": "/mp3-to-mp4",
         "content_blocks": [
             {"type": "paragraph", "text": "YouTube and similar platforms only accept video uploads — you cannot upload an MP3 directly. But if you have a podcast episode, a song, or a voice recording that you want to share on a video platform, you can wrap the audio in a simple video file. This guide shows you how."},
+            {"type": "image", "src": "/static/mp3-to-mp4-converter-tool.svg", "alt": "MP3 to MP4 converter showing audio being wrapped into a static video file", "width": "720", "height": "400", "caption": "MP3 to MP4 converter showing audio being wrapped into a static video file"},
             {"type": "heading", "text": "Why Convert MP3 to MP4?"},
             {"type": "list", "entries": [
                 "Upload podcasts to YouTube — the biggest free audio distribution platform.",
@@ -620,6 +630,7 @@ BLOG_ARTICLES = {
         "tool_link": "/image-to-pdf",
         "content_blocks": [
             {"type": "paragraph", "text": "Sometimes you need a PDF instead of an image — for a job application, a legal submission, or a document scanner. Converting an image to PDF turns a single picture into a print-ready, shareable document in seconds."},
+            {"type": "image", "src": "/static/image-to-pdf-converter-tool.svg", "alt": "Image to PDF converter showing a photo transforming into a print-ready PDF document", "width": "720", "height": "400", "caption": "Image to PDF converter showing a photo transforming into a print-ready PDF document"},
             {"type": "heading", "text": "Why Convert Image to PDF?"},
             {"type": "list", "entries": [
                 "Printing — PDFs print exactly as designed, while images can scale unpredictably.",
@@ -651,6 +662,7 @@ BLOG_ARTICLES = {
         "tool_link": "/image-resizer",
         "content_blocks": [
             {"type": "paragraph", "text": "Uploading an image at the wrong size to social media makes it look blurry, cropped, or stretched. Each platform has specific dimensions, and getting them right makes your posts look professional. This guide lists the exact sizes and shows you how to resize images for free."},
+            {"type": "image", "src": "/static/social-media-image-sizes-guide.svg", "alt": "Social media image size chart showing correct dimensions for Instagram Facebook and Twitter", "width": "720", "height": "400", "caption": "Social media image size chart showing correct dimensions for Instagram Facebook and Twitter"},
             {"type": "heading", "text": "Social Media Image Size Cheat Sheet"},
             {"type": "list", "entries": [
                 "Instagram square post: 1080 × 1080 px",
@@ -688,6 +700,7 @@ BLOG_ARTICLES = {
         "tool_link": "/image-converter",
         "content_blocks": [
             {"type": "paragraph", "text": "JPG, PNG, and WebP are the three most common image formats, but they are not interchangeable. Each has strengths and weaknesses for quality, file size, transparency, and compatibility. Choosing the wrong one makes your files too large or your images look bad."},
+            {"type": "image", "src": "/static/jpg-png-webp-format-comparison.svg", "alt": "JPG vs PNG vs WebP comparison showing file size and quality differences between image formats", "width": "720", "height": "400", "caption": "JPG vs PNG vs WebP comparison showing file size and quality differences between image formats"},
             {"type": "heading", "text": "JPG — Best for Photos"},
             {"type": "paragraph", "text": "JPG (or JPEG) uses lossy compression designed for photographs and complex images with gradients. It produces small files but loses a tiny amount of detail each time you save. JPG does not support transparency. Use JPG for photos, web images, and anything where small file size matters."},
             {"type": "heading", "text": "PNG — Best for Graphics and Transparency"},
@@ -719,6 +732,7 @@ BLOG_ARTICLES = {
         "tool_link": "/compress-image",
         "content_blocks": [
             {"type": "paragraph", "text": "Everyone hits a file size limit eventually — an email that rejects a 25 MB attachment, a form that only accepts files under 5 MB, or a website that loads slowly because of huge images. This guide shows you how to reduce file size across every format without ruining quality."},
+            {"type": "image", "src": "/static/reduce-file-size-guide.svg", "alt": "File size reduction guide showing compression across images PDFs video and audio", "width": "720", "height": "400", "caption": "File size reduction guide showing compression across images PDFs video and audio"},
             {"type": "heading", "text": "Reduce Image Size"},
             {"type": "ordered", "entries": [
                 "Compress the image — lower the quality to 70-80 for a 50-80% size reduction with minimal visible loss.",
@@ -746,6 +760,7 @@ BLOG_ARTICLES = {
         "tool_link": "/pdf-to-word",
         "content_blocks": [
             {"type": "paragraph", "text": "Extracting text from a PDF should be simple, but the method depends on whether your PDF is text-based (created from a document) or scanned (an image of paper). Here are the three ways to get editable text, and when to use each."},
+            {"type": "image", "src": "/static/extract-text-from-pdf-guide.svg", "alt": "Text extraction from PDF showing selectable text being copied to an editable document", "width": "720", "height": "400", "caption": "Text extraction from PDF showing selectable text being copied to an editable document"},
             {"type": "heading", "text": "Method 1: Convert PDF to Word (Text-Based PDFs)"},
             {"type": "paragraph", "text": "If your PDF contains selectable text (you can highlight it with your mouse), the fastest method is to convert it to Word. PureFileConverter extracts the text, tables, and images into an editable .docx file you can open in Word or Google Docs."},
             {"type": "heading", "text": "Method 2: Copy and Paste (Short Text)"},
@@ -769,6 +784,7 @@ BLOG_ARTICLES = {
         "tool_link": "/avi-to-mp4",
         "content_blocks": [
             {"type": "paragraph", "text": "Not all video files play on all devices. A video that plays fine on your computer may not work on your phone, TV, or in a browser. Understanding video formats and how to convert between them solves most playback problems."},
+            {"type": "image", "src": "/static/video-format-conversion-guide.svg", "alt": "Video format conversion showing MP4 AVI MKV and MOV formats converting to universal MP4", "width": "720", "height": "400", "caption": "Video format conversion showing MP4 AVI MKV and MOV formats converting to universal MP4"},
             {"type": "heading", "text": "Common Video Formats Explained"},
             {"type": "list", "entries": [
                 "MP4 (H.264) — the universal standard. Plays on every device, browser, and platform.",
@@ -803,6 +819,7 @@ BLOG_ARTICLES = {
         "tool_link": "/wav-to-mp3",
         "content_blocks": [
             {"type": "paragraph", "text": "Audio files come in many formats, and not all of them play everywhere. The most common problem is a WAV file that is too large to email or share, or an M4A file that won't play on a non-Apple device. Converting audio to MP3 solves both."},
+            {"type": "image", "src": "/static/audio-format-conversion-guide.svg", "alt": "Audio format conversion showing MP3 WAV M4A and FLAC formats converting to MP3", "width": "720", "height": "400", "caption": "Audio format conversion showing MP3 WAV M4A and FLAC formats converting to MP3"},
             {"type": "heading", "text": "Common Audio Formats Explained"},
             {"type": "list", "entries": [
                 "MP3 — the universal standard. Plays on every device. 10× smaller than WAV.",
@@ -837,6 +854,7 @@ BLOG_ARTICLES = {
         "tool_link": "/mp4-to-mp3",
         "content_blocks": [
             {"type": "paragraph", "text": "You have a video but you only need the sound — a lecture you want to listen to on your commute, a podcast interview, a music video, or a meeting recording. Converting MP4 to MP3 extracts just the audio track so you can listen without watching."},
+            {"type": "image", "src": "/static/extract-audio-from-video-guide.svg", "alt": "Extract audio from MP4 video showing audio track being pulled from a video file", "width": "720", "height": "400", "caption": "Extract audio from MP4 video showing audio track being pulled from a video file"},
             {"type": "heading", "text": "Why Extract Audio from Video?"},
             {"type": "list", "entries": [
                 "Listen to lectures and talks on the go without video.",
@@ -869,6 +887,7 @@ BLOG_ARTICLES = {
         "tool_link": "/excel-to-pdf",
         "content_blocks": [
             {"type": "paragraph", "text": "Sharing an Excel spreadsheet as a PDF makes it easy to read on any device without the recipient needing Excel. It also prevents accidental edits and keeps your formatting intact. This guide shows you how to convert Excel to PDF for free."},
+            {"type": "image", "src": "/static/excel-to-pdf-converter-tool.svg", "alt": "Excel to PDF converter showing a spreadsheet transforming into a print-ready PDF", "width": "720", "height": "400", "caption": "Excel to PDF converter showing a spreadsheet transforming into a print-ready PDF"},
             {"type": "heading", "text": "Why Convert Excel to PDF?"},
             {"type": "list", "entries": [
                 "Recipients do not need Excel to view it — PDF opens everywhere.",
@@ -901,6 +920,7 @@ BLOG_ARTICLES = {
         "tool_link": "/",
         "content_blocks": [
             {"type": "paragraph", "text": "PDF, DOCX, XLSX, JPG, PNG, WebP, MP3, MP4, WAV, AVI — the list of file formats is endless, and it is easy to get confused. This glossary explains every common format in plain English, what it is used for, and when to convert it."},
+            {"type": "image", "src": "/static/file-format-glossary-guide.svg", "alt": "File format glossary showing PDF DOCX XLSX JPG PNG MP4 and MP3 file extensions explained", "width": "720", "height": "400", "caption": "File format glossary showing PDF DOCX XLSX JPG PNG MP4 and MP3 file extensions explained"},
             {"type": "heading", "text": "Document Formats"},
             {"type": "list", "entries": [
                 "PDF — Portable Document Format. Read-only, looks the same everywhere. Use for sharing final documents.",
@@ -948,6 +968,7 @@ BLOG_ARTICLES = {
         "tool_link": "/",
         "content_blocks": [
             {"type": "paragraph", "text": "You do not need to sit at a computer to convert files. PureFileConverter works entirely in your phone's browser — iPhone or Android — with no app to install and no account to create. This guide shows you how to convert files on the go."},
+            {"type": "image", "src": "/static/convert-files-on-mobile-guide.svg", "alt": "Converting files on a mobile phone showing a smartphone browser uploading a document", "width": "720", "height": "400", "caption": "Converting files on a mobile phone showing a smartphone browser uploading a document"},
             {"type": "heading", "text": "Why Convert Files on Your Phone?"},
             {"type": "list", "entries": [
                 "Convert a document while commuting or traveling.",
@@ -981,6 +1002,7 @@ BLOG_ARTICLES = {
         "tool_link": "/",
         "content_blocks": [
             {"type": "paragraph", "text": "You do not need Microsoft Office, Adobe Acrobat, or any desktop software to convert documents. Free online tools do it all in your browser, on any device, in seconds. This guide explains how."},
+            {"type": "image", "src": "/static/convert-documents-online-guide.svg", "alt": "Convert documents without software showing a browser-based file conversion with no downloads", "width": "720", "height": "400", "caption": "Convert documents without software showing a browser-based file conversion with no downloads"},
             {"type": "heading", "text": "What You Can Convert Without Software"},
             {"type": "list", "entries": [
                 "PDF to Word — no need for Adobe Acrobat or Microsoft Word.",
@@ -1016,6 +1038,7 @@ BLOG_ARTICLES = {
         "tool_link": "/",
         "content_blocks": [
             {"type": "paragraph", "text": "File conversion should take seconds, not minutes. If you find yourself waiting, it is usually because you are using the wrong format, the wrong tool, or a slow connection. This guide shares the fastest way to convert any file."},
+            {"type": "image", "src": "/static/convert-files-fast-guide.svg", "alt": "Fast file conversion showing a speedometer and rapid document processing", "width": "720", "height": "400", "caption": "Fast file conversion showing a speedometer and rapid document processing"},
             {"type": "heading", "text": "Tips for Faster Conversion"},
             {"type": "list", "entries": [
                 "Use a tool that processes on the server, not in your browser — server-side conversion with professional software is faster and higher quality.",
@@ -1050,6 +1073,7 @@ BLOG_ARTICLES = {
         "tool_link": "/pdf-to-word",
         "content_blocks": [
             {"type": "paragraph", "text": "There are three main ways to convert a PDF to Word: Google Docs, dedicated online converters, and Adobe Acrobat. They all work, but the quality, speed, and limitations differ significantly. Here is how they compare."},
+            {"type": "image", "src": "/static/pdf-to-word-methods-comparison.svg", "alt": "PDF to Word methods comparison showing Google Docs online converters and Adobe Acrobat", "width": "720", "height": "400", "caption": "PDF to Word methods comparison showing Google Docs online converters and Adobe Acrobat"},
             {"type": "heading", "text": "Method 1: Google Docs (Free)"},
             {"type": "paragraph", "text": "Google Docs can open PDFs and convert them to editable text. It is free and requires no additional software. However, the conversion quality is inconsistent — complex layouts, tables, and images often break. Google Docs also does not preserve the original formatting as faithfully as dedicated converters."},
             {"type": "heading", "text": "Method 2: Online Converters (Free, Best Overall)"},
@@ -1073,6 +1097,7 @@ BLOG_ARTICLES = {
         "tool_link": "/avi-to-mp4",
         "content_blocks": [
             {"type": "paragraph", "text": "MP4 has become the universal video format — it plays on every phone, computer, tablet, smart TV, browser, and media player. If a video won't play somewhere, converting it to MP4 almost always fixes the problem."},
+            {"type": "image", "src": "/static/convert-video-to-mp4-guide.svg", "alt": "Convert video to MP4 showing universal video format compatibility across devices", "width": "720", "height": "400", "caption": "Convert video to MP4 showing universal video format compatibility across devices"},
             {"type": "heading", "text": "Why MP4 Is the Universal Standard"},
             {"type": "paragraph", "text": "MP4 uses H.264 video compression and AAC audio — two codecs that are supported natively by every modern device and platform. Unlike AVI, MKV, or MOV, which may use proprietary or inefficient codecs, MP4 is designed for maximum compatibility and efficient file size."},
             {"type": "heading", "text": "When to Convert to MP4"},
@@ -1106,6 +1131,7 @@ BLOG_ARTICLES = {
         "tool_link": "/wav-to-mp3",
         "content_blocks": [
             {"type": "paragraph", "text": "MP3 is the universal audio format — it plays on every phone, computer, car stereo, and media player ever made. If an audio file won't play or is too large to share, converting it to MP3 solves the problem."},
+            {"type": "image", "src": "/static/convert-audio-to-mp3-guide.svg", "alt": "Convert audio to MP3 showing universal audio format compatibility across devices", "width": "720", "height": "400", "caption": "Convert audio to MP3 showing universal audio format compatibility across devices"},
             {"type": "heading", "text": "Why MP3 Is Universal"},
             {"type": "paragraph", "text": "MP3 has been the standard audio format for over 25 years. It uses lossy compression that reduces file size by 90% compared to WAV, with quality loss that is imperceptible to most listeners. Every device supports MP3 natively."},
             {"type": "heading", "text": "When to Convert to MP3"},
@@ -1139,6 +1165,7 @@ BLOG_ARTICLES = {
         "tool_link": "/image-converter",
         "content_blocks": [
             {"type": "paragraph", "text": "PNG images are large because they use lossless compression. Converting PNG to WebP can reduce file size by up to 80% while keeping transparency — making your website load dramatically faster without any visible quality loss."},
+            {"type": "image", "src": "/static/png-to-webp-converter-tool.svg", "alt": "PNG to WebP converter showing 80% file size reduction while keeping transparency", "width": "720", "height": "400", "caption": "PNG to WebP converter showing 80% file size reduction while keeping transparency"},
             {"type": "heading", "text": "Why Convert PNG to WebP?"},
             {"type": "list", "entries": [
                 "80% smaller files — a 500 KB PNG becomes a 100 KB WebP.",
