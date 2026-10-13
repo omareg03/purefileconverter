@@ -12,4 +12,4 @@ services:
       - key: CONTACT_EMAIL
         value: support@purefileconverter.com
       - key: ADSENSE_CLIENT_ID
-        value: ""
+        value: ca-pub-8373498789989542
