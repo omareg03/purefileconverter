@@ -1027,7 +1027,7 @@ def llms_txt():
         f"# PureFileConverter\n\n"
         f"> Free online file converter for documents, images, audio and video. "
         f"No signup, no watermarks. Files are automatically deleted after 1 hour. "
-        f"12 dedicated conversion tools and 32 in-depth conversion guides.\n\n"
+        f"12 dedicated conversion tools and 50 in-depth conversion guides.\n\n"
         f"## Document Tools\n"
         f"- [PDF to Word]({SITE_URL}/pdf-to-word): Convert PDF files into editable DOCX documents.\n"
         f"- [Word to PDF]({SITE_URL}/word-to-pdf): Convert DOC and DOCX files to PDF.\n"
