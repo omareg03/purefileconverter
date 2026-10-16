@@ -18,3 +18,8 @@ node_modules/
 *.exe
 dummy.docx
 t.png
+
+# Real pytest suite (the *test* rule above would hide it)
+!tests/
+!tests/**
+tests/__pycache__/

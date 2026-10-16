@@ -8,3 +8,5 @@ docx2pdf
 Pillow
 jinja2
 moviepy
+pypdfium2
+pillow-heif

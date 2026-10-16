@@ -2,7 +2,7 @@
 
 Configuration (all optional, via environment variables):
     MAX_UPLOAD_MB            Max upload size per file in MB (default 10)
-    SITE_URL                 Public base URL used for canonical/sitemap (default https://cleanfileconverter.com)
+    SITE_URL                 Public base URL used for canonical/sitemap (default https://purefileconverter.com)
     CONTACT_EMAIL            Address shown on the contact page
     ADSENSE_CLIENT_ID        e.g. ca-pub-1234567890123456. When set, the real AdSense script is
                              injected and the grey placeholder boxes disappear.
@@ -13,6 +13,7 @@ Configuration (all optional, via environment variables):
                              (defaults to on when running on Render)
 """
 import asyncio
+import io
 import json
 import logging
 import os
@@ -24,6 +25,7 @@ import sys
 import tempfile
 import threading
 import time
+import urllib.parse
 import uuid
 from collections import deque
 from contextlib import asynccontextmanager, contextmanager, nullcontext
@@ -129,6 +131,11 @@ import pandas as pd                                    # noqa: E402
 from pdf2docx import Converter                         # noqa: E402
 from PIL import Image, ImageOps                        # noqa: E402
 from moviepy import VideoFileClip, AudioFileClip, ColorClip  # noqa: E402
+import pypdfium2 as pdfium                             # noqa: E402  (BSD-3/Apache-2.0, Chrome's PDF engine)
+import pillow_heif                                     # noqa: E402  (BSD-3)
+import zipfile                                         # noqa: E402
+
+pillow_heif.register_heif_opener()
 
 # Windows-only imports are guarded so the server imports cleanly on Linux.
 pythoncom = None
@@ -494,6 +501,34 @@ class UploadGuardMiddleware:
                 await resp(scope, receive, tracking_send)
 
 
+class TrailingSlashRedirectMiddleware:
+    """One-hop 301 from `/path/` to the canonical `SITE_URL/path` (Starlette's default is a 307).
+
+    Search Console reports 307s as temporary redirects; a single permanent hop to the absolute
+    canonical URL consolidates signals and avoids http->https->no-slash chains.
+    """
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and scope["method"] in ("GET", "HEAD"):
+            path = scope["path"]
+            if len(path) > 1 and path.endswith("/") and not path.startswith(("/static/", "/api/")):
+                target = "/" + path.strip("/")
+                # Collapse leading slashes so `//evil.com/` can never become a protocol-relative URL.
+                target = re.sub(r"/{2,}", "/", target)
+                # scope["path"] is percent-decoded: re-encode so CR/LF, '?' and non-Latin-1 chars
+                # can't break or alter the Location header.
+                target = urllib.parse.quote(target, safe="/:@!$&'()*+,;=-._~")
+                qs = scope.get("query_string", b"").decode("latin-1")
+                location = SITE_URL + target + (f"?{qs}" if qs else "")
+                resp = Response(status_code=301, headers={"Location": location})
+                await resp(scope, receive, send)
+                return
+        await self.app(scope, receive, send)
+
+
 # --------------------------------------------------------------------------- #
 # App + templates
 # --------------------------------------------------------------------------- #
@@ -512,6 +547,7 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(title="PureFileConverter", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(UploadGuardMiddleware)
+app.add_middleware(TrailingSlashRedirectMiddleware)
 
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
@@ -634,6 +670,18 @@ TOOLS_CONFIG = {
         "icon": "fa-file-excel",
         "color": "emerald",
     },
+    "pdf-to-jpg": {
+        "category": "Document Tools",
+        "title": "PDF to JPG",
+        "accept": ".pdf,application/pdf",
+        "description": "Turn every page of a PDF into a high-quality JPG image.",
+        "intro": "Convert PDF pages into sharp JPG images at 150 DPI. A one-page PDF downloads as a single JPG; a multi-page PDF downloads as a ZIP with one JPG per page (up to 50 pages).",
+        "faq": ("What happens with multi-page PDFs?", "Each page becomes its own JPG image at 150 DPI. Single-page PDFs download as one .jpg file; PDFs with 2 to 50 pages download as a .zip containing page-1.jpg, page-2.jpg and so on."),
+        "endpoint": "/api/convert/pdf-to-jpg",
+        "has_format_selector": False,
+        "icon": "fa-file-image",
+        "color": "red",
+    },
     "image-converter": {
         "category": "Image Tools",
         "title": "Image Converter",
@@ -684,6 +732,18 @@ TOOLS_CONFIG = {
         "icon": "fa-compress",
         "color": "cyan",
     },
+    "heic-to-jpg": {
+        "category": "Image Tools",
+        "title": "HEIC to JPG",
+        "accept": ".heic,.heif,image/heic,image/heif",
+        "description": "Convert iPhone HEIC photos into universally compatible JPG images.",
+        "intro": "iPhones save photos as HEIC, which many Windows PCs, websites and apps cannot open. Upload a HEIC or HEIF photo and download a standard JPG that works everywhere.",
+        "faq": ("Will my photo lose quality?", "The JPG is saved at high quality (92) with the original resolution and correct orientation, so the difference is not visible for normal viewing, printing or sharing."),
+        "endpoint": "/api/convert/heic-to-jpg",
+        "has_format_selector": False,
+        "icon": "fa-mobile-screen",
+        "color": "orange",
+    },
     "mp4-to-mp3": {
         "category": "Media Tools",
         "title": "MP4 to MP3",
@@ -731,6 +791,18 @@ TOOLS_CONFIG = {
         "has_format_selector": False,
         "icon": "fa-film",
         "color": "pink",
+    },
+    "mp4-to-gif": {
+        "category": "Media Tools",
+        "title": "MP4 to GIF",
+        "accept": ".mp4,.mov,.webm,video/mp4",
+        "description": "Turn a short video clip into an animated GIF.",
+        "intro": "Convert the first 15 seconds of an MP4, MOV or WebM clip into a smooth looping GIF (12 fps, up to 480 px wide) using an optimized colour palette, ready for chats, social media and memes.",
+        "faq": ("Is there a length limit?", "GIFs grow large very quickly, so the converter uses the first 15 seconds of the clip at 12 frames per second and up to 480 pixels wide. Trim your video first if you need a different section."),
+        "endpoint": "/api/convert/mp4-to-gif",
+        "has_format_selector": False,
+        "icon": "fa-photo-film",
+        "color": "fuchsia",
     },
 }
 
@@ -862,7 +934,7 @@ async def read_index(request: Request):
             "Online converter tools",
         ],
         "sameAs": [
-            "https://github.com/omareg03/cleanfileconverter",
+            "https://github.com/omareg03/purefileconverter",
         ],
     }
     return render(
@@ -1027,22 +1099,25 @@ def llms_txt():
         f"# PureFileConverter\n\n"
         f"> Free online file converter for documents, images, audio and video. "
         f"No signup, no watermarks. Files are automatically deleted after 1 hour. "
-        f"12 dedicated conversion tools and 150 in-depth conversion guides.\n\n"
+        f"{len(TOOLS_CONFIG)} dedicated conversion tools and {len(BLOG_ARTICLES)} in-depth conversion guides.\n\n"
         f"## Document Tools\n"
         f"- [PDF to Word]({SITE_URL}/pdf-to-word): Convert PDF files into editable DOCX documents.\n"
         f"- [Word to PDF]({SITE_URL}/word-to-pdf): Convert DOC and DOCX files to PDF.\n"
         f"- [CSV to Excel]({SITE_URL}/csv-to-excel): Convert CSV files to styled XLSX workbooks.\n"
-        f"- [Excel to PDF]({SITE_URL}/excel-to-pdf): Convert Excel spreadsheets to print-ready PDF.\n\n"
+        f"- [Excel to PDF]({SITE_URL}/excel-to-pdf): Convert Excel spreadsheets to print-ready PDF.\n"
+        f"- [PDF to JPG]({SITE_URL}/pdf-to-jpg): Convert every PDF page to a 150 DPI JPG image (ZIP for multi-page).\n\n"
         f"## Image Tools\n"
         f"- [Image Converter]({SITE_URL}/image-converter): Convert between JPG, PNG and WebP.\n"
         f"- [Image to PDF]({SITE_URL}/image-to-pdf): Convert JPG, PNG, WebP images to PDF.\n"
         f"- [Image Resizer]({SITE_URL}/image-resizer): Resize images to exact dimensions.\n"
-        f"- [Compress Image]({SITE_URL}/compress-image): Compress JPG and WebP images.\n\n"
+        f"- [Compress Image]({SITE_URL}/compress-image): Compress JPG and WebP images.\n"
+        f"- [HEIC to JPG]({SITE_URL}/heic-to-jpg): Convert iPhone HEIC/HEIF photos to JPG.\n\n"
         f"## Media Tools\n"
         f"- [MP4 to MP3]({SITE_URL}/mp4-to-mp3): Extract audio from MP4 video.\n"
         f"- [WAV to MP3]({SITE_URL}/wav-to-mp3): Convert WAV audio to MP3.\n"
         f"- [AVI to MP4]({SITE_URL}/avi-to-mp4): Convert AVI video to MP4 (H.264).\n"
-        f"- [MP3 to MP4]({SITE_URL}/mp3-to-mp4): Create a static video from an MP3 audio file.\n\n"
+        f"- [MP3 to MP4]({SITE_URL}/mp3-to-mp4): Create a static video from an MP3 audio file.\n"
+        f"- [MP4 to GIF]({SITE_URL}/mp4-to-gif): Turn a short video clip into an animated GIF.\n\n"
         f"## Blog & Guides\n"
         f"- [Blog]({SITE_URL}/blog): File conversion guides and tutorials.\n"
         f"- [How to Convert PDF to Word]({SITE_URL}/blog/how-to-convert-pdf-to-word): Step-by-step guide.\n"
@@ -1269,6 +1344,123 @@ def convert_mp3_to_mp4(file: UploadFile = File(...)):
                 clip.close()
             audio.close()
     return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}.mp4"}
+
+
+PDF_TO_JPG_DPI = 150
+PDF_TO_JPG_MAX_PAGES = 50
+PDF_TO_JPG_QUALITY = 85
+PDF_TO_JPG_MAX_PIXELS = 25_000_000   # per page (~75 MB RGB) — oversized pages are rendered at a lower DPI
+pdfium_lock = threading.Lock()   # PDFium is not thread-safe; sync endpoints run in a threadpool
+
+
+@app.post("/api/convert/pdf-to-jpg")
+def convert_pdf_to_jpg(file: UploadFile = File(...)):
+    stem = safe_stem(file.filename)
+    src = save_upload(file, ".pdf")
+    file_id, out_path = None, None
+    with conversion("", src, heavy=True), pdfium_lock:
+        pdf = pdfium.PdfDocument(src)
+        try:
+            n = len(pdf)
+            if n == 0:
+                raise HTTPException(status_code=400, detail=GENERIC_FAILURE)
+            if n > PDF_TO_JPG_MAX_PAGES:
+                raise HTTPException(status_code=400, detail=(
+                    f"This PDF has {n} pages. The free converter handles up to {PDF_TO_JPG_MAX_PAGES} "
+                    "pages per file. Please split the PDF and try again."))
+            scale = PDF_TO_JPG_DPI / 72
+            if n == 1:
+                file_id, out_path = new_output("jpg")
+                try:
+                    _render_pdf_page(pdf, 0, scale).save(out_path, "JPEG", quality=PDF_TO_JPG_QUALITY, optimize=True)
+                except BaseException:
+                    cleanup_file(out_path)
+                    raise
+                filename = f"{stem}.jpg"
+            else:
+                file_id, out_path = new_output("zip")
+                try:
+                    # One page in memory at a time keeps RAM flat on Render's 512 MB instance.
+                    with zipfile.ZipFile(out_path, "w", compression=zipfile.ZIP_STORED) as zf:
+                        for i in range(n):
+                            buf = io.BytesIO()
+                            _render_pdf_page(pdf, i, scale).save(buf, "JPEG", quality=PDF_TO_JPG_QUALITY,
+                                                                 optimize=True)
+                            zf.writestr(f"{stem}-page-{i + 1}.jpg", buf.getvalue())
+                except BaseException:
+                    cleanup_file(out_path)
+                    raise
+                filename = f"{stem}_jpg.zip"
+        finally:
+            pdf.close()
+    return {"file_id": file_id, "filename": filename}
+
+
+def _render_pdf_page(pdf, index: int, scale: float) -> Image.Image:
+    page = pdf[index]
+    try:
+        w_pt, h_pt = page.get_size()
+        pixels = max(1.0, w_pt * scale) * max(1.0, h_pt * scale)
+        if pixels > PDF_TO_JPG_MAX_PIXELS:
+            scale *= (PDF_TO_JPG_MAX_PIXELS / pixels) ** 0.5
+        bitmap = page.render(scale=scale)
+        try:
+            return flatten_to_rgb(bitmap.to_pil())
+        finally:
+            bitmap.close()
+    finally:
+        page.close()
+
+
+@app.post("/api/convert/heic-to-jpg")
+def convert_heic_to_jpg(file: UploadFile = File(...)):
+    src = save_upload(file, ".heic")
+    file_id, out_path = new_output("jpg")
+    with conversion(out_path, src, heavy=True):
+        with Image.open(src) as image:
+            # exif_transpose bakes the orientation into the pixels; EXIF is not copied to the JPG.
+            image = flatten_to_rgb(ImageOps.exif_transpose(image))
+            image.save(out_path, "JPEG", quality=92, optimize=True)
+    return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}.jpg"}
+
+
+GIF_MAX_SECONDS = 15
+GIF_FPS = 12
+GIF_MAX_WIDTH = 480
+GIF_MAX_HEIGHT = 480
+GIF_TIMEOUT_SECONDS = 120
+
+
+@app.post("/api/convert/mp4-to-gif")
+def convert_mp4_to_gif(file: UploadFile = File(...)):
+    if not FFMPEG_PATH:
+        raise HTTPException(status_code=503, detail="Video conversion is temporarily unavailable on this server.")
+    src = save_upload(file, ".mp4")
+    file_id, out_path = new_output("gif")
+    palette = out_path + ".palette.png"
+    with conversion(out_path, src, palette, heavy=True):
+        # Bounding box keeps memory flat for portrait/odd aspect ratios; two passes (palettegen,
+        # then paletteuse) stream frames instead of buffering the whole clip in RAM.
+        base = (f"fps={GIF_FPS},scale=w='min({GIF_MAX_WIDTH},iw)':h='min({GIF_MAX_HEIGHT},ih)'"
+                ":force_original_aspect_ratio=decrease:flags=lanczos,scale=trunc(iw/2)*2:trunc(ih/2)*2")
+        common = [FFMPEG_PATH, "-y", "-loglevel", "error", "-t", str(GIF_MAX_SECONDS), "-i", src]
+        _run_ffmpeg(common + ["-vf", f"{base},palettegen=stats_mode=diff", "-frames:v", "1",
+                              "-update", "1", palette])
+        _run_ffmpeg(common + ["-i", palette, "-lavfi",
+                              f"{base}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=5",
+                              "-loop", "0", "-f", "gif", out_path])
+        if not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
+            raise RuntimeError("ffmpeg produced no GIF")
+    return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}.gif"}
+
+
+def _run_ffmpeg(cmd) -> None:
+    try:
+        proc = subprocess.run(cmd, capture_output=True, timeout=GIF_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("ffmpeg timed out")
+    if proc.returncode != 0:
+        raise RuntimeError(f"ffmpeg failed ({proc.returncode}): {proc.stderr[-300:].decode(errors='replace')}")
 
 
 @_page("/blog")
