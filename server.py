@@ -133,7 +133,21 @@ from PIL import Image, ImageOps                        # noqa: E402
 from moviepy import VideoFileClip, AudioFileClip, ColorClip  # noqa: E402
 import pypdfium2 as pdfium                             # noqa: E402  (BSD-3/Apache-2.0, Chrome's PDF engine)
 import pillow_heif                                     # noqa: E402  (BSD-3)
+from pypdf import PdfReader, PdfWriter                 # noqa: E402  (BSD-3, pure Python: merge/split/rotate/compress)
+from pypdf import Configuration as PdfConfiguration    # noqa: E402
+from pypdf import apply_configuration as pdf_apply_configuration  # noqa: E402
 import zipfile                                         # noqa: E402
+
+# Decompression-bomb guard for pypdf on a 512 MB instance: cap every decoded stream at 25 MB
+# (defaults are 75 MB). Applied per request via a context manager (pypdf uses a ContextVar).
+PDF_LIMITS = PdfConfiguration().with_overwrites(
+    maximum_declared_stream_length=25_000_000,
+    array_based_stream_maximum_output_length=25_000_000,
+    jbig2_maximum_output_length=25_000_000,
+    lzw_maximum_output_length=25_000_000,
+    run_length_maximum_output_length=25_000_000,
+    zlib_maximum_output_length=25_000_000,
+)
 
 pillow_heif.register_heif_opener()
 
@@ -562,8 +576,13 @@ class CachedStaticFiles(StaticFiles):
 app.mount("/static", CachedStaticFiles(directory=STATIC_DIR), name="static")
 
 templates = Jinja2Templates(directory=BASE_DIR)
+try:  # cache-buster: CSS is served "immutable", so the URL must change whenever the file does
+    ASSET_VERSION = str(int(os.path.getmtime(os.path.join(STATIC_DIR, "tailwind.css"))))
+except OSError:
+    ASSET_VERSION = "1"
 templates.env.globals.update(
     site_url=SITE_URL,
+    asset_version=ASSET_VERSION,
     contact_email=CONTACT_EMAIL,
     max_upload_mb=f"{MAX_UPLOAD_MB:g}",
     adsense_client_id=ADSENSE_CLIENT_ID,
@@ -617,6 +636,7 @@ COLOR_CLASSES = {  # literal class names so the Tailwind build can see them
 
 CATEGORIES = [
     {"name": "Document Tools", "heading": "text-blue-700 border-blue-200", "badge": "bg-blue-100 text-blue-600"},
+    {"name": "PDF Tools", "heading": "text-red-700 border-red-200", "badge": "bg-red-100 text-red-600"},
     {"name": "Image Tools", "heading": "text-green-700 border-green-200", "badge": "bg-green-100 text-green-600"},
     {"name": "Media Tools", "heading": "text-purple-700 border-purple-200", "badge": "bg-purple-100 text-purple-600"},
 ]
@@ -804,7 +824,75 @@ TOOLS_CONFIG = {
         "icon": "fa-photo-film",
         "color": "fuchsia",
     },
+    "merge-pdf": {
+        "category": "PDF Tools",
+        "title": "Merge PDF",
+        "seo_title": "Merge PDF Online Free – Combine PDF Files",
+        "meta": "Merge PDF files online for free. Combine up to 10 PDFs into one document in seconds — "
+                "no signup, no watermark, files deleted after 1 hour.",
+        "accept": ".pdf,application/pdf",
+        "description": "Combine multiple PDF files into one document in the order you choose.",
+        "intro": "Merge PDF files into a single document in seconds. Select 2 to 10 PDFs, and they are joined in the order you pick them, keeping every page, link and bookmark-free layout intact. Perfect for combining scanned pages, invoices, reports or job application documents into one file.",
+        "faq": ("In what order are the PDFs merged?", "Files are combined in the order you select them. Tip: name your files 1, 2, 3 before uploading so your file picker lists them in the right order. Up to 10 PDFs and 10 MB total per merge."),
+        "endpoint": "/api/convert/merge-pdf",
+        "has_format_selector": False,
+        "multi_file": True,
+        "icon": "fa-object-group",
+        "color": "red",
+    },
+    "split-pdf": {
+        "category": "PDF Tools",
+        "title": "Split PDF",
+        "seo_title": "Split PDF Online Free – Extract PDF Pages",
+        "meta": "Split a PDF online for free. Extract specific pages or save every page as a separate PDF — "
+                "no signup, no watermark, files deleted after 1 hour.",
+        "accept": ".pdf,application/pdf",
+        "description": "Extract pages from a PDF or split every page into its own file.",
+        "intro": "Split a PDF into separate files or pull out just the pages you need. Leave the page box empty to save every page as its own PDF (downloaded as a ZIP), or type pages like 1-3, 5 to extract them into one new PDF.",
+        "faq": ("How do I extract only certain pages?", "Type the pages you want in the page box, for example 2 for a single page, 1-3 for a range, or 1-3, 7, 10-12 for a mix. Those pages are saved, in that order, into one new PDF. Leave the box empty to split every page into its own file."),
+        "endpoint": "/api/convert/split-pdf",
+        "has_format_selector": False,
+        "has_pages_input": True,
+        "icon": "fa-scissors",
+        "color": "orange",
+    },
+    "compress-pdf": {
+        "category": "PDF Tools",
+        "title": "Compress PDF",
+        "seo_title": "Compress PDF Online Free – Reduce PDF Size",
+        "meta": "Compress PDF files online for free. Reduce PDF file size for email and uploads while keeping "
+                "it readable — no signup, no watermark, auto-deleted.",
+        "accept": ".pdf,application/pdf",
+        "description": "Reduce PDF file size for email, uploads and sharing.",
+        "intro": "Make large PDFs smaller so they fit email attachment limits and upload forms. The compressor shrinks oversized images, recompresses page content and removes duplicate data, while keeping text sharp and searchable. Your PDF is never made larger than the original.",
+        "faq": ("How much smaller will my PDF get?", "Scanned and image-heavy PDFs often shrink by 50 to 90 percent. PDFs that are mostly text are already compact, so the savings are smaller. If compression cannot make your file smaller, you get the original back unchanged."),
+        "endpoint": "/api/convert/compress-pdf",
+        "has_format_selector": False,
+        "icon": "fa-file-zipper",
+        "color": "emerald",
+    },
+    "rotate-pdf": {
+        "category": "PDF Tools",
+        "title": "Rotate PDF",
+        "seo_title": "Rotate PDF Online Free – Rotate PDF Pages",
+        "meta": "Rotate PDF pages online for free. Turn every page 90°, 180° or 270° and save a fixed PDF — "
+                "no signup, no watermark, files deleted after 1 hour.",
+        "accept": ".pdf,application/pdf",
+        "description": "Rotate all pages of a PDF 90°, 180° or 270° and save it permanently.",
+        "intro": "Fix sideways or upside-down PDFs permanently. Choose 90° clockwise, 180° or 270° and every page is rotated and saved, so the document opens the right way up on any device, printer or viewer.",
+        "faq": ("Is the rotation permanent?", "Yes. The rotation is saved into the new PDF file, so it opens correctly in Adobe Reader, Chrome, Edge, Preview, phones and printers. The page content itself is not re-rendered, so quality is unchanged."),
+        "endpoint": "/api/convert/rotate-pdf",
+        "has_format_selector": False,
+        "has_angle_select": True,
+        "icon": "fa-rotate",
+        "color": "blue",
+    },
 }
+
+# Clean SEO titles for tools whose name is not an "X to Y" conversion.
+TOOLS_CONFIG["image-converter"]["seo_title"] = "Image Converter Online Free – JPG, PNG & WebP"
+TOOLS_CONFIG["image-resizer"]["seo_title"] = "Image Resizer Online Free – Resize JPG, PNG, WebP"
+TOOLS_CONFIG["compress-image"]["seo_title"] = "Compress Image Online Free – Reduce Image Size"
 
 for _slug, _tool in TOOLS_CONFIG.items():
     _tool["slug"] = _slug
@@ -815,6 +903,7 @@ TOOLS_BY_CATEGORY = [
     for cat in CATEGORIES
 ]
 templates.env.globals["tools_by_category"] = TOOLS_BY_CATEGORY
+templates.env.globals["tools_count"] = len(TOOLS_CONFIG)
 
 LEGAL_PAGES = ["privacy", "terms", "contact", "about"]
 
@@ -927,21 +1016,23 @@ async def read_index(request: Request):
         "name": "PureFileConverter",
         "url": SITE_URL,
         "logo": SITE_URL + "/static/og-image.svg",
-        "description": "Free online file converter for documents, images, audio and video. No signup, no watermarks.",
+        "description": "Free online file converter and PDF tools for documents, images, audio and video. "
+                       "No signup, no watermarks.",
         "knowsAbout": [
-            "File conversion", "PDF conversion", "Document conversion",
-            "Image processing", "Audio extraction", "Video transcoding",
-            "Online converter tools",
+            "File conversion", "PDF conversion", "PDF merging", "PDF splitting", "PDF compression",
+            "Document conversion", "Image processing", "HEIC to JPG conversion", "Audio extraction",
+            "Video transcoding", "Online converter tools",
         ],
         "sameAs": [
             "https://github.com/omareg03/purefileconverter",
+            "https://www.saashub.com/purefileconverter",
         ],
     }
     return render(
         request, "index.html",
-        page_title="Free Online File Converter - PDF, Word, Image, Audio & Video | PureFileConverter",
-        page_description="Free online file converter: PDF to Word, Word to PDF, CSV to Excel, image converter, "
-                         "MP4 to MP3 and more. No signup. Files are automatically deleted after 1 hour.",
+        page_title="Free Online File Converter & PDF Tools | PureFileConverter",
+        page_description=f"Free online file converter and PDF tools: merge, split and compress PDF, PDF to Word, "
+                         f"HEIC to JPG, MP4 to MP3 and more — {len(TOOLS_CONFIG)} tools, no signup, no watermark.",
         jsonld_blocks=[jsonld_dumps(website), jsonld_dumps(org)],
     )
 
@@ -1106,6 +1197,11 @@ def llms_txt():
         f"- [CSV to Excel]({SITE_URL}/csv-to-excel): Convert CSV files to styled XLSX workbooks.\n"
         f"- [Excel to PDF]({SITE_URL}/excel-to-pdf): Convert Excel spreadsheets to print-ready PDF.\n"
         f"- [PDF to JPG]({SITE_URL}/pdf-to-jpg): Convert every PDF page to a 150 DPI JPG image (ZIP for multi-page).\n\n"
+        f"## PDF Tools\n"
+        f"- [Merge PDF]({SITE_URL}/merge-pdf): Combine up to 10 PDF files into one document.\n"
+        f"- [Split PDF]({SITE_URL}/split-pdf): Extract pages or split every page into its own PDF.\n"
+        f"- [Compress PDF]({SITE_URL}/compress-pdf): Reduce PDF file size for email and uploads.\n"
+        f"- [Rotate PDF]({SITE_URL}/rotate-pdf): Rotate all PDF pages 90, 180 or 270 degrees permanently.\n\n"
         f"## Image Tools\n"
         f"- [Image Converter]({SITE_URL}/image-converter): Convert between JPG, PNG and WebP.\n"
         f"- [Image to PDF]({SITE_URL}/image-to-pdf): Convert JPG, PNG, WebP images to PDF.\n"
@@ -1463,6 +1559,199 @@ def _run_ffmpeg(cmd) -> None:
         raise RuntimeError(f"ffmpeg failed ({proc.returncode}): {proc.stderr[-300:].decode(errors='replace')}")
 
 
+# --------------------------------------------------------------------------- #
+# PDF Tools: merge / split / compress / rotate (pypdf, pure Python, thread-safe per request)
+# --------------------------------------------------------------------------- #
+
+PDF_TOOLS_MAX_PAGES = 200
+MERGE_MAX_FILES = 10
+SPLIT_MAX_OUTPUT_BYTES = 100 * 1024 * 1024
+PDF_PASSWORD_MESSAGE = ("This PDF is password-protected. Please remove the password (open it and "
+                        "re-save or print to PDF) and try again.")
+COMPRESS_MAX_IMAGE_SIDE = 1600          # ~150 DPI on a Letter/A4 page
+COMPRESS_JPEG_QUALITY = 70
+COMPRESS_MAX_SOURCE_PIXELS = 16_000_000  # never decode bigger images into RAM (512 MB instance)
+
+
+def _open_pdf(path: str, page_budget: int = PDF_TOOLS_MAX_PAGES) -> PdfReader:
+    reader = PdfReader(path, strict=False)
+    if reader.is_encrypted:
+        try:
+            ok = reader.decrypt("")
+        except Exception:
+            ok = 0
+        if not ok:
+            raise HTTPException(status_code=400, detail=PDF_PASSWORD_MESSAGE)
+    n = len(reader.pages)
+    if n == 0:
+        raise HTTPException(status_code=400, detail=GENERIC_FAILURE)
+    if n > page_budget:
+        raise HTTPException(status_code=400, detail=(
+            f"This PDF has too many pages. The free PDF tools handle up to {PDF_TOOLS_MAX_PAGES} pages. "
+            "Please split it into smaller files and try again."))
+    return reader
+
+
+def _write_pdf(writer: PdfWriter, path: str) -> None:
+    with open(path, "wb") as fh:
+        writer.write(fh)
+
+
+def _parse_page_spec(spec: str, n: int) -> list:
+    """'1-3, 5' -> [0, 1, 2, 4] (zero-based, in the order given). Raises 400 on anything invalid."""
+    bad = HTTPException(status_code=400, detail=(
+        f"Invalid page selection. Use page numbers between 1 and {n}, for example 1-3, 5."))
+    spec = (spec or "").strip()
+    if len(spec) > 200:
+        raise bad
+    out = []
+    for part in spec.split(","):
+        part = part.strip()
+        m = re.fullmatch(r"(\d{1,6})(?:\s*-\s*(\d{1,6}))?", part)
+        if not m:
+            raise bad
+        a = int(m.group(1))
+        b = int(m.group(2)) if m.group(2) else a
+        if not (1 <= a <= b <= n):
+            raise bad
+        out.extend(range(a - 1, b))
+    if not out or len(out) > PDF_TOOLS_MAX_PAGES:
+        raise bad
+    return out
+
+
+@app.post("/api/convert/merge-pdf")
+def merge_pdf(files: list[UploadFile] = File(...)):
+    if len(files) < 2:
+        raise HTTPException(status_code=400, detail="Please select at least 2 PDF files to merge.")
+    if len(files) > MERGE_MAX_FILES:
+        raise HTTPException(status_code=400, detail=f"You can merge up to {MERGE_MAX_FILES} PDF files at once.")
+    srcs = []
+    try:
+        for f in files:
+            srcs.append(save_upload(f, ".pdf"))
+    except BaseException:
+        for p in srcs:
+            cleanup_file(p)
+        raise
+    file_id, out_path = new_output("pdf")
+    with conversion(out_path, *srcs, heavy=True), pdf_apply_configuration(PDF_LIMITS):
+        writer = PdfWriter()
+        total = 0
+        for p in srcs:
+            reader = _open_pdf(p, PDF_TOOLS_MAX_PAGES - total)
+            total += len(reader.pages)
+            writer.append(reader)
+        _write_pdf(writer, out_path)
+    return {"file_id": file_id, "filename": "merged.pdf"}
+
+
+@app.post("/api/convert/split-pdf")
+def split_pdf(file: UploadFile = File(...), pages: str = Form("")):
+    stem = safe_stem(file.filename)
+    src = save_upload(file, ".pdf")
+    if pages.strip():
+        file_id, out_path = new_output("pdf")
+        filename = f"{stem}_pages.pdf"
+    else:
+        file_id, out_path = new_output("zip")
+        filename = f"{stem}_split.zip"
+    with conversion(out_path, src, heavy=True), pdf_apply_configuration(PDF_LIMITS):
+        reader = _open_pdf(src)
+        n = len(reader.pages)
+        if pages.strip():
+            writer = PdfWriter()
+            for i in _parse_page_spec(pages, n):
+                writer.add_page(reader.pages[i])
+            _write_pdf(writer, out_path)
+        else:
+            with zipfile.ZipFile(out_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+                for i in range(n):
+                    writer = PdfWriter()
+                    writer.add_page(reader.pages[i])
+                    buf = io.BytesIO()
+                    writer.write(buf)
+                    zf.writestr(f"{stem}-page-{i + 1}.pdf", buf.getvalue())
+                    # Each single-page PDF carries its own copy of shared fonts/images: bound the disk usage.
+                    if os.path.getsize(out_path) > SPLIT_MAX_OUTPUT_BYTES:
+                        raise HTTPException(status_code=400, detail=(
+                            "This PDF is too large to split into single pages for free. Try extracting a "
+                            "page range instead, for example 1-20."))
+    return {"file_id": file_id, "filename": filename}
+
+
+@app.post("/api/convert/rotate-pdf")
+def rotate_pdf(file: UploadFile = File(...), angle: int = Form(...)):
+    if angle not in (90, 180, 270):
+        raise HTTPException(status_code=400, detail="Choose a rotation of 90, 180 or 270 degrees.")
+    src = save_upload(file, ".pdf")
+    file_id, out_path = new_output("pdf")
+    with conversion(out_path, src, heavy=True), pdf_apply_configuration(PDF_LIMITS):
+        writer = PdfWriter(clone_from=_open_pdf(src))
+        for page in writer.pages:
+            page.rotate(angle)
+        _write_pdf(writer, out_path)
+    return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}_rotated.pdf"}
+
+
+def _downsample_pdf_images(writer: PdfWriter) -> None:
+    """Re-encode large opaque raster images as JPEG at ~150 DPI. Skips masks/transparency and anything risky."""
+    done = set()
+    for page in writer.pages:
+        try:
+            xobjs = page["/Resources"].get_object().get("/XObject")
+        except Exception:
+            continue
+        if not xobjs:
+            continue
+        xobjs = xobjs.get_object()
+        for name in list(xobjs.keys()):
+            try:
+                xobj = xobjs[name].get_object()
+                ref = xobjs[name].indirect_reference if hasattr(xobjs[name], "indirect_reference") else None
+                key = (ref.idnum, ref.generation) if ref is not None else id(xobj)
+                if key in done or xobj.get("/Subtype") != "/Image":
+                    continue
+                done.add(key)
+                if "/SMask" in xobj or "/Mask" in xobj or xobj.get("/ImageMask"):
+                    continue
+                w, h = int(xobj.get("/Width", 0)), int(xobj.get("/Height", 0))
+                if w * h <= 0 or w * h > COMPRESS_MAX_SOURCE_PIXELS:
+                    continue
+                if max(w, h) <= COMPRESS_MAX_IMAGE_SIDE and xobj.get("/Filter") == "/DCTDecode":
+                    continue  # already a reasonably sized JPEG
+                image_file = page.images[name]
+                img = image_file.image
+                if img is None:
+                    continue
+                img = flatten_to_rgb(img) if img.mode not in ("L", "RGB") else img
+                img.thumbnail((COMPRESS_MAX_IMAGE_SIDE, COMPRESS_MAX_IMAGE_SIDE), Image.Resampling.LANCZOS)
+                image_file.replace(img, quality=COMPRESS_JPEG_QUALITY)
+            except Exception:
+                log.debug("compress-pdf: skipped image %s", name, exc_info=True)
+                continue
+
+
+@app.post("/api/convert/compress-pdf")
+def compress_pdf(file: UploadFile = File(...)):
+    src = save_upload(file, ".pdf")
+    src_size = os.path.getsize(src)
+    file_id, out_path = new_output("pdf")
+    with conversion(out_path, src, heavy=True), pdf_apply_configuration(PDF_LIMITS):
+        writer = PdfWriter(clone_from=_open_pdf(src))
+        _downsample_pdf_images(writer)
+        for page in writer.pages:
+            try:
+                page.compress_content_streams()
+            except Exception:
+                log.debug("compress-pdf: content stream not compressible", exc_info=True)
+        writer.compress_identical_objects(remove_identicals=True, remove_orphans=True)
+        _write_pdf(writer, out_path)
+        if os.path.getsize(out_path) >= src_size:
+            shutil.copyfile(src, out_path)  # never hand back a bigger file
+    return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}_compressed.pdf"}
+
+
 @_page("/blog")
 async def blog_index(request: Request):
     categories = []
@@ -1515,10 +1804,16 @@ async def tool_page(request: Request, tool_slug: str):
     faqs = build_faqs(tool)
     # Related tools: same category, excluding current
     related = [t for t in TOOLS_CONFIG.values() if t["category"] == tool["category"] and t["slug"] != tool_slug][:3]
+    if tool.get("seo_title"):
+        page_title = f"{tool['seo_title']} | PureFileConverter"
+    else:
+        src_fmt, dst_fmt = tool["title"].split(" to ", 1)
+        page_title = f"{tool['title']} Online Free – Convert {src_fmt} to {dst_fmt} | PureFileConverter"
+    page_description = tool.get("meta") or (f"{tool['description']} Free online {tool['title']} converter - "
+                                            f"no signup, files auto-deleted after 1 hour.")
     return render(
         request, "tool.html", tool=tool, faqs=faqs, related_tools=related,
         jsonld_blocks=tool_jsonld(tool, faqs),
-        page_title=f"{tool['title']} Online Free – Convert {tool['title'].split(' to ')[0]} to {tool['title'].split(' to ')[-1] if ' to ' in tool['title'] else 'Any Format'} | PureFileConverter",
-        page_description=f"{tool['description']} Free online {tool['title']} converter - no signup, "
-                         f"files auto-deleted after 1 hour.",
+        page_title=page_title,
+        page_description=page_description,
     )

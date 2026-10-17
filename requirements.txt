@@ -10,3 +10,4 @@ jinja2
 moviepy
 pypdfium2
 pillow-heif
+pypdf
