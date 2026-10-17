@@ -543,6 +543,39 @@ class TrailingSlashRedirectMiddleware:
         await self.app(scope, receive, send)
 
 
+class SecurityHeadersMiddleware:
+    """Baseline hardening headers on every response (clickjacking, MIME sniffing, HTTPS, referrer leaks).
+
+    No Content-Security-Policy on purpose: AdSense Auto Ads + GA4 load scripts/frames from a large,
+    changing set of Google domains, and a strict CSP silently breaks ad serving (= lost revenue).
+    """
+
+    HEADERS = [
+        (b"strict-transport-security", b"max-age=31536000; includeSubDomains"),
+        (b"x-content-type-options", b"nosniff"),
+        (b"x-frame-options", b"SAMEORIGIN"),
+        (b"referrer-policy", b"strict-origin-when-cross-origin"),
+        (b"permissions-policy", b"camera=(), microphone=(), geolocation=(), payment=(), usb=()"),
+    ]
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        async def send_with_headers(message):
+            if message["type"] == "http.response.start":
+                existing = {k.lower() for k, _ in message.get("headers", [])}
+                message["headers"] = list(message.get("headers", [])) + [
+                    (k, v) for k, v in self.HEADERS if k not in existing]
+            await send(message)
+
+        await self.app(scope, receive, send_with_headers)
+
+
 # --------------------------------------------------------------------------- #
 # App + templates
 # --------------------------------------------------------------------------- #
@@ -562,6 +595,7 @@ app = FastAPI(title="PureFileConverter", docs_url=None, redoc_url=None, openapi_
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(UploadGuardMiddleware)
 app.add_middleware(TrailingSlashRedirectMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
@@ -1570,6 +1604,7 @@ PDF_PASSWORD_MESSAGE = ("This PDF is password-protected. Please remove the passw
                         "re-save or print to PDF) and try again.")
 COMPRESS_MAX_IMAGE_SIDE = 1600          # ~150 DPI on a Letter/A4 page
 COMPRESS_JPEG_QUALITY = 70
+COMPRESS_JPEG_MAX_BYTES_PER_PIXEL = 0.35  # JPEGs denser than this (e.g. quality 95-100 scans) get re-encoded
 COMPRESS_MAX_SOURCE_PIXELS = 16_000_000  # never decode bigger images into RAM (512 MB instance)
 
 
@@ -1719,7 +1754,9 @@ def _downsample_pdf_images(writer: PdfWriter) -> None:
                 if w * h <= 0 or w * h > COMPRESS_MAX_SOURCE_PIXELS:
                     continue
                 if max(w, h) <= COMPRESS_MAX_IMAGE_SIDE and xobj.get("/Filter") == "/DCTDecode":
-                    continue  # already a reasonably sized JPEG
+                    raw = getattr(xobj, "_data", b"") or b""
+                    if len(raw) <= w * h * COMPRESS_JPEG_MAX_BYTES_PER_PIXEL:
+                        continue  # already a reasonably sized, efficiently encoded JPEG
                 image_file = page.images[name]
                 img = image_file.image
                 if img is None:

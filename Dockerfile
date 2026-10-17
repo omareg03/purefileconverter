@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# Security: Pillow 12.3+ fixes 35 CVEs. moviepy 2.2.1 still pins pillow<12 in metadata but works
+# with 12.x (verified: MP4->MP3, WAV->MP3, MP3->MP4). --no-deps skips the resolver conflict.
+RUN pip install --no-cache-dir --no-deps "Pillow==12.3.0"
 
 COPY . .
 

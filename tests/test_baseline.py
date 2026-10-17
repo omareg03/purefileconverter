@@ -84,3 +84,20 @@ def test_rate_limit_429(client):
 
 def test_file_ttl_is_one_hour():
     assert server.FILE_TTL_SECONDS == 3600
+
+
+def test_security_headers_on_pages_and_api(client):
+    for path in ["/", "/merge-pdf", "/blog", "/sitemap.xml", "/health"]:
+        h = client.get(path).headers
+        assert h["x-content-type-options"] == "nosniff", path
+        assert h["x-frame-options"] == "SAMEORIGIN", path
+        assert "max-age=" in h["strict-transport-security"], path
+        assert h["referrer-policy"] == "strict-origin-when-cross-origin", path
+        assert "camera=()" in h["permissions-policy"], path
+    assert "content-security-policy" not in client.get("/").headers  # would break AdSense/GA4
+
+
+def test_no_debug_or_source_exposure(client):
+    for path in ["/docs", "/redoc", "/openapi.json", "/.env", "/.git/config", "/server.py",
+                 "/static/../server.py", "/api/download/..%2fserver.py"]:
+        assert client.get(path).status_code == 404, path
