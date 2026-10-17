@@ -795,7 +795,7 @@ TOOLS_CONFIG = {
         "faq": ("Will my photo lose quality?", "The JPG is saved at high quality (92) with the original resolution and correct orientation, so the difference is not visible for normal viewing, printing or sharing."),
         "endpoint": "/api/convert/heic-to-jpg",
         "has_format_selector": False,
-        "icon": "fa-mobile-screen",
+        "icon": "fa-mobile-screen-button",
         "color": "orange",
     },
     "mp4-to-mp3": {

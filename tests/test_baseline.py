@@ -101,3 +101,18 @@ def test_no_debug_or_source_exposure(client):
     for path in ["/docs", "/redoc", "/openapi.json", "/.env", "/.git/config", "/server.py",
                  "/static/../server.py", "/api/download/..%2fserver.py"]:
         assert client.get(path).status_code == 404, path
+
+
+def test_every_tool_icon_exists_in_font_awesome_6_0_0():
+    """base.html loads Font Awesome 6.0.0; newer icon names render as an empty circle."""
+    import os
+    path = os.path.join(os.path.dirname(__file__), "fixtures", "fa600_icons.txt")
+    known = set(open(path, encoding="utf-8").read().split())
+    for slug, tool in server.TOOLS_CONFIG.items():
+        assert tool["icon"] in known, f"{slug}: {tool['icon']} is not in Font Awesome 6.0.0"
+
+
+def test_homepage_rows_center_incomplete_last_row(client):
+    html = client.get("/").text
+    assert "justify-content: center" in html
+    assert html.count('class="tool-row') == len(server.CATEGORIES)

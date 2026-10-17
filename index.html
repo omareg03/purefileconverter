@@ -5,6 +5,12 @@
 .tool-card:hover .tool-icon {
             transform: scale(1.1);
         }
+/* Centered, wrapping tool rows: an incomplete last row (e.g. the 5th card) sits in the middle
+   instead of hugging the left. Same breakpoints as the old grid: 1 / 2 / 4 per row. */
+.tool-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; }
+.tool-row > .tool-card { width: 100%; }
+@media (min-width: 768px)  { .tool-row > .tool-card { width: calc((100% - 1.5rem) / 2); } }
+@media (min-width: 1024px) { .tool-row > .tool-card { width: calc((100% - 4.5rem) / 4); } }
 </style>
 {% endblock %}
 
@@ -16,7 +22,7 @@
         <div id="tools" class="w-full max-w-6xl">
             {% for cat in tools_by_category %}
             <h2 class="text-2xl font-bold {{ cat.heading }} mb-6 border-b-2 pb-2">{{ cat.name }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6{% if not loop.last %} mb-12{% endif %}">
+            <div class="tool-row{% if not loop.last %} mb-12{% endif %}">
                 {% for t in cat.tools %}
                 <a href="/{{ t.slug }}" class="tool-card bg-white p-6 rounded-xl shadow-sm hover:shadow-md border border-gray-100 transition flex flex-col items-center text-center block">
                     <div class="tool-icon w-16 h-16 {{ cat.badge }} rounded-full flex items-center justify-center text-2xl mb-4 transition duration-300">
