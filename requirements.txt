@@ -11,3 +11,4 @@ moviepy
 pypdfium2
 pillow-heif
 pypdf
+qrcode==8.2

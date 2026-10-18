@@ -137,6 +137,7 @@ from pypdf import PdfReader, PdfWriter                 # noqa: E402  (BSD-3, pur
 from pypdf import Configuration as PdfConfiguration    # noqa: E402
 from pypdf import apply_configuration as pdf_apply_configuration  # noqa: E402
 import zipfile                                         # noqa: E402
+import qrcode                                          # noqa: E402  (BSD, pure Python; renders via Pillow)
 
 # Decompression-bomb guard for pypdf on a 512 MB instance: cap every decoded stream at 25 MB
 # (defaults are 75 MB). Applied per request via a context manager (pypdf uses a ContextVar).
@@ -798,6 +799,58 @@ TOOLS_CONFIG = {
         "icon": "fa-mobile-screen-button",
         "color": "orange",
     },
+    "remove-background": {
+        "category": "Image Tools",
+        "title": "Remove Background",
+        "seo_title": "Remove Background from Image Free – AI, No Upload",
+        "meta": "Remove the background from any photo free with AI. Get a transparent PNG in seconds — "
+                "runs in your browser, no upload, no signup, no watermark.",
+        "accept": "image/png, image/jpeg, image/webp",
+        "description": "Erase photo backgrounds with AI and download a transparent PNG.",
+        "intro": "Remove the background from product photos, portraits, logos and selfies in one click. The AI model runs entirely inside your web browser, so your photo is never uploaded to any server. You get a full-resolution transparent PNG (up to 2048 px) that is ready for online stores, profile pictures, presentations and design projects.",
+        "faq": ("Is my photo uploaded to your server?", "No. The AI runs 100% in your browser using WebAssembly, so your photo never leaves your device. The first use downloads the AI model (about 44 MB) once; after that it is cached and works much faster."),
+        "faqs": [
+            ("Is the background remover really free?",
+             "Yes. It is completely free with no signup, no watermark and no credits. You download a full-quality transparent PNG every time."),
+            ("Is my photo uploaded to your server?",
+             "No. The AI runs 100% in your browser using WebAssembly, so your photo never leaves your device. The first use downloads the AI model (about 44 MB) once; after that it is cached and works much faster."),
+            ("Which images work best?",
+             "Photos with a clear main subject, such as a person, product, pet, car or logo, give the cleanest edges. JPG, PNG and WebP up to 25 MB are supported; very large photos are scaled to 2048 px on the longest side."),
+            ("Why is the first run slower?",
+             "Your browser downloads and prepares the AI model on the first run, which can take 10 to 60 seconds depending on your connection. Later photos are processed in a few seconds."),
+        ],
+        "client_side": "remove-background",
+        "endpoint": "",
+        "has_format_selector": False,
+        "icon": "fa-wand-magic-sparkles",
+        "color": "emerald",
+    },
+    "qr-code-generator": {
+        "category": "Image Tools",
+        "title": "QR Code Generator",
+        "seo_title": "Free QR Code Generator – No Signup, Never Expires",
+        "meta": "Create a free QR code for any link, text, email or phone number. High-resolution PNG, "
+                "no watermark, no signup, and it never expires.",
+        "accept": "",
+        "description": "Turn any link or text into a high-resolution QR code image.",
+        "intro": "Create a QR code for a website link, menu, business card, flyer, Wi-Fi details or any text. Paste your content, click Generate and download a crisp, print-ready PNG of about 1000 x 1000 pixels. The code is static, so it works forever: no account, no tracking redirects and no expiry date.",
+        "faq": ("Will my QR code ever stop working?", "No. The QR code stores your link or text directly inside the image, with no redirect service in between, so it keeps working forever and cannot be switched off."),
+        "faqs": [
+            ("Is the QR code generator really free?",
+             "Yes. Create as many QR codes as you like for free, with no signup, no watermark and no limits on scans."),
+            ("Will my QR code ever stop working?",
+             "No. The QR code stores your link or text directly inside the image, with no redirect service in between, so it keeps working forever and cannot be switched off."),
+            ("What can I put in a QR code?",
+             "Website links, plain text, email addresses, phone numbers or Wi-Fi details, up to 1000 characters. For Wi-Fi, use the format WIFI:T:WPA;S:NetworkName;P:Password;; and phones will offer to join the network."),
+            ("Can I print the QR code?",
+             "Yes. The PNG is about 1000 x 1000 pixels with a quiet-zone border and medium error correction, which prints sharply on flyers, menus, posters and business cards."),
+        ],
+        "client_side": "qr",
+        "endpoint": "/api/convert/qr-code-generator",
+        "has_format_selector": False,
+        "icon": "fa-qrcode",
+        "color": "teal",
+    },
     "mp4-to-mp3": {
         "category": "Media Tools",
         "title": "MP4 to MP3",
@@ -857,6 +910,18 @@ TOOLS_CONFIG = {
         "has_format_selector": False,
         "icon": "fa-photo-film",
         "color": "fuchsia",
+    },
+    "gif-to-mp4": {
+        "category": "Media Tools",
+        "title": "GIF to MP4",
+        "accept": ".gif,image/gif",
+        "description": "Convert animated GIFs into small, smooth MP4 videos.",
+        "intro": "Convert an animated GIF into an MP4 video that is often 5 to 10 times smaller and plays smoothly on Instagram, TikTok, X, WhatsApp, PowerPoint and every phone. The video uses H.264, the most compatible format, keeps the original frame rate and covers the first 30 seconds at up to 720 pixels.",
+        "faq": ("Why convert a GIF to MP4?", "MP4 video compresses animation far better than GIF, so files are usually 5 to 10 times smaller with smoother colours. Many social networks and messaging apps also accept MP4 where large GIFs fail to upload."),
+        "endpoint": "/api/convert/gif-to-mp4",
+        "has_format_selector": False,
+        "icon": "fa-clapperboard",
+        "color": "indigo",
     },
     "merge-pdf": {
         "category": "PDF Tools",
@@ -973,6 +1038,8 @@ def blog_article_jsonld(article: dict) -> list:
 
 
 def build_faqs(tool: dict):
+    if tool.get("faqs"):  # tools that do not upload a file (browser AI, text input) need their own answers
+        return list(tool["faqs"])
     title = tool["title"]
     return [
         (f"Is the {title} converter really free?",
@@ -1054,8 +1121,9 @@ async def read_index(request: Request):
                        "No signup, no watermarks.",
         "knowsAbout": [
             "File conversion", "PDF conversion", "PDF merging", "PDF splitting", "PDF compression",
-            "Document conversion", "Image processing", "HEIC to JPG conversion", "Audio extraction",
-            "Video transcoding", "Online converter tools",
+            "Document conversion", "Image processing", "HEIC to JPG conversion", "AI background removal",
+            "QR code generation", "Audio extraction", "Video transcoding", "GIF to MP4 conversion",
+            "Online converter tools",
         ],
         "sameAs": [
             "https://github.com/omareg03/purefileconverter",
@@ -1241,13 +1309,16 @@ def llms_txt():
         f"- [Image to PDF]({SITE_URL}/image-to-pdf): Convert JPG, PNG, WebP images to PDF.\n"
         f"- [Image Resizer]({SITE_URL}/image-resizer): Resize images to exact dimensions.\n"
         f"- [Compress Image]({SITE_URL}/compress-image): Compress JPG and WebP images.\n"
-        f"- [HEIC to JPG]({SITE_URL}/heic-to-jpg): Convert iPhone HEIC/HEIF photos to JPG.\n\n"
+        f"- [HEIC to JPG]({SITE_URL}/heic-to-jpg): Convert iPhone HEIC/HEIF photos to JPG.\n"
+        f"- [Remove Background]({SITE_URL}/remove-background): Free AI background remover; runs in the browser (no upload) and exports a transparent PNG.\n"
+        f"- [QR Code Generator]({SITE_URL}/qr-code-generator): Create static, never-expiring QR codes for links, text or Wi-Fi as a ~1000 px PNG.\n\n"
         f"## Media Tools\n"
         f"- [MP4 to MP3]({SITE_URL}/mp4-to-mp3): Extract audio from MP4 video.\n"
         f"- [WAV to MP3]({SITE_URL}/wav-to-mp3): Convert WAV audio to MP3.\n"
         f"- [AVI to MP4]({SITE_URL}/avi-to-mp4): Convert AVI video to MP4 (H.264).\n"
         f"- [MP3 to MP4]({SITE_URL}/mp3-to-mp4): Create a static video from an MP3 audio file.\n"
-        f"- [MP4 to GIF]({SITE_URL}/mp4-to-gif): Turn a short video clip into an animated GIF.\n\n"
+        f"- [MP4 to GIF]({SITE_URL}/mp4-to-gif): Turn a short video clip into an animated GIF.\n"
+        f"- [GIF to MP4]({SITE_URL}/gif-to-mp4): Convert animated GIFs to small H.264 MP4 videos (first 30 s, up to 720 px).\n\n"
         f"## Blog & Guides\n"
         f"- [Blog]({SITE_URL}/blog): File conversion guides and tutorials.\n"
         f"- [How to Convert PDF to Word]({SITE_URL}/blog/how-to-convert-pdf-to-word): Step-by-step guide.\n"
@@ -1582,6 +1653,55 @@ def convert_mp4_to_gif(file: UploadFile = File(...)):
         if not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
             raise RuntimeError("ffmpeg produced no GIF")
     return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}.gif"}
+
+
+GIF_TO_MP4_MAX_SECONDS = 30
+GIF_TO_MP4_MAX_SIDE = 720
+
+
+@app.post("/api/convert/gif-to-mp4")
+def convert_gif_to_mp4(file: UploadFile = File(...)):
+    if not FFMPEG_PATH:
+        raise HTTPException(status_code=503, detail="Video conversion is temporarily unavailable on this server.")
+    src = save_upload(file, ".gif")
+    file_id, out_path = new_output("mp4")
+    with conversion(out_path, src, heavy=True):
+        # Fit inside 720x720 (never upscale), force even dimensions for yuv420p/H.264, and composite
+        # GIF transparency onto white so it does not turn black. 2 threads keep RAM flat on 512 MB.
+        vf = (f"scale=w='min({GIF_TO_MP4_MAX_SIDE},iw)':h='min({GIF_TO_MP4_MAX_SIDE},ih)'"
+              ":force_original_aspect_ratio=decrease:flags=lanczos,"
+              "pad=ceil(iw/2)*2:ceil(ih/2)*2:color=white,format=yuv420p")
+        _run_ffmpeg([FFMPEG_PATH, "-y", "-loglevel", "error", "-t", str(GIF_TO_MP4_MAX_SECONDS),
+                     "-i", src, "-filter_complex",
+                     f"color=white:s=16x16[bg];[bg][0:v]scale2ref[bg2][fg];[bg2][fg]overlay=shortest=1,{vf}",
+                     "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-threads", "2",
+                     "-movflags", "+faststart", out_path])
+        if not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
+            raise RuntimeError("ffmpeg produced no MP4")
+    return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}.mp4"}
+
+
+QR_MAX_CHARS = 1000
+QR_TARGET_PX = 1000
+
+
+@app.post("/api/convert/qr-code-generator")
+def generate_qr_code(text: str = Form(...)):
+    text = text.strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="Please enter a link or some text for your QR code.")
+    if len(text) > QR_MAX_CHARS:
+        raise HTTPException(status_code=400,
+                            detail=f"Text is too long for a reliable QR code. Please keep it under {QR_MAX_CHARS} characters.")
+    file_id, out_path = new_output("png")
+    with conversion(out_path):
+        qr = qrcode.QRCode(error_correction=qrcode.ERROR_CORRECT_M, border=4, box_size=1)
+        qr.add_data(text)
+        qr.make(fit=True)
+        modules = qr.modules_count + 2 * qr.border
+        qr.box_size = max(4, QR_TARGET_PX // modules)
+        qr.make_image(fill_color="black", back_color="white").get_image().convert("L").save(out_path, "PNG", optimize=True)
+    return {"file_id": file_id, "filename": "qr-code.png"}
 
 
 def _run_ffmpeg(cmd) -> None:
