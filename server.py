@@ -1014,6 +1014,11 @@ from blog_data import BLOG_ARTICLES, BLOG_CATEGORIES
 from blog_redirects import REMOVED_ARTICLE_REDIRECTS
 from tool_content import TOOL_GUIDES
 
+HOME_GUIDES = [  # guides linked from the homepage "Popular guides" box
+    "how-to-convert-pdf-to-word", "how-to-compress-pdf-files", "how-to-convert-heic-to-jpg",
+    "jpg-vs-png-vs-webp-guide", "how-to-extract-audio-from-mp4", "is-it-safe-to-convert-files-online",
+]
+
 for _slug, _guide in TOOL_GUIDES.items():  # long-form, tool-specific help rendered under each converter
     _article = _guide.get("article")
     TOOLS_CONFIG[_slug]["guide"] = {**_guide, "article_title": BLOG_ARTICLES[_article]["title"] if _article else None}
@@ -1144,6 +1149,8 @@ async def read_index(request: Request):
         page_description=f"Free online file converter and PDF tools: merge, split and compress PDF, PDF to Word, "
                          f"HEIC to JPG, MP4 to MP3 and more — {len(TOOLS_CONFIG)} tools, no signup, no watermark.",
         jsonld_blocks=[jsonld_dumps(website), jsonld_dumps(org)],
+        home_guides=[BLOG_ARTICLES[s] for s in HOME_GUIDES],
+        guides_count=len(BLOG_ARTICLES),
     )
 
 

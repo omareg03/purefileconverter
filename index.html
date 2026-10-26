@@ -35,4 +35,23 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- How it works + popular guides: real explanatory text and internal links to the blog -->
+        <section class="w-full max-w-6xl mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm page-prose">
+                <h2>How PureFileConverter works</h2>
+                <p>Pick a tool, upload your file and download the result. Documents are converted with LibreOffice and pdf2docx, PDFs are handled with pypdf and PDFium, images with Pillow, and audio and video with FFmpeg: the same open-source engines that power a lot of professional software.</p>
+                <p>Files travel over HTTPS and are stored under random names. Your upload is deleted as soon as the conversion finishes, and the result is deleted right after you download it, or automatically within about 1 hour. The background remover goes one step further: its AI runs inside your browser, so the photo is never uploaded at all.</p>
+                <p>Every tool is free and works on phones, tablets and computers without an account. Files can be up to {{ max_upload_mb }} MB each. PureFileConverter is an independent project run by one person; <a href="/about">read who runs it and how it is funded</a>.</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm page-prose">
+                <h2>Popular guides</h2>
+                <p>Not sure which format, setting or method to choose? These step-by-step guides explain the details in plain English:</p>
+                <ul>
+                    {% for g in home_guides %}<li><a href="/blog/{{ g.slug }}">{{ g.title }}</a></li>
+                    {% endfor %}
+                </ul>
+                <p><a href="/blog">Browse all {{ guides_count }} guides</a></p>
+            </div>
+        </section>
 {% endblock %}

@@ -320,3 +320,13 @@ def test_articles_show_author_and_real_dates(client):
 def test_removed_article_redirects_stay_on_this_site():
     for slug, target in REMOVED_ARTICLE_REDIRECTS.items():
         assert target.startswith("/") and not target.startswith("//") and "\\" not in target, (slug, target)
+
+
+def test_homepage_explains_the_service_and_links_the_guides(client):
+    html = client.get("/").text
+    main_html = re.search(r"(?is)<main[^>]*>(.*)</main>", html).group(1)
+    assert word_count(html) >= 500, word_count(html)
+    assert "How PureFileConverter works" in main_html
+    assert 'href="/about"' in main_html
+    linked = blog_links(main_html) & set(BLOG_ARTICLES)
+    assert len(linked) >= 6, linked
