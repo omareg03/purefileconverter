@@ -1037,7 +1037,7 @@ def blog_article_jsonld(article: dict) -> list:
         "dateModified": article["date_modified"],
         "author": {
             "@type": "Person",
-            "name": "Omar G.",
+            "name": "Omy Grace",
             "url": SITE_URL + "/about",
         },
         "publisher": {

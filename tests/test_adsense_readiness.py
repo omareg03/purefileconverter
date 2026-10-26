@@ -121,7 +121,7 @@ def test_about_page_says_who_runs_the_site_and_how_it_works(client):
     html = client.get("/about").text
     text = main_text(html)
     assert word_count(html) >= 350
-    for phrase in ("Omar G.", "Florida", "LibreOffice", "FFmpeg", "1 hour", "advertising"):
+    for phrase in ("Omy Grace", "Florida", "LibreOffice", "FFmpeg", "1 hour", "advertising"):
         assert phrase in text, phrase
     assert 'href="/contact"' in html
 
@@ -310,9 +310,9 @@ def test_affiliate_boxes_stay_a_minor_part_of_the_blog():
 def test_articles_show_author_and_real_dates(client):
     for slug, a in BLOG_ARTICLES.items():
         html = client.get(f"/blog/{slug}").text
-        assert 'By <a href="/about">Omar G.</a>' in html, slug
+        assert 'By <a href="/about">Omy Grace</a>' in html, slug
         art = article_schema(html)
-        assert art["author"] == {"@type": "Person", "name": "Omar G.", "url": server.SITE_URL + "/about"}, slug
+        assert art["author"] == {"@type": "Person", "name": "Omy Grace", "url": server.SITE_URL + "/about"}, slug
         assert (art["datePublished"], art["dateModified"]) == (a["date_published"], a["date_modified"]), slug
         assert art["image"].startswith(server.SITE_URL + "/static/"), slug
 
