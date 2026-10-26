@@ -1,9 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl w-full bg-white p-8 rounded shadow text-gray-800">
-    <h1 class="text-3xl font-bold mb-4">About PureFileConverter</h1>
-    <p class="mb-4">PureFileConverter is a free, fast, and secure multi-tool for converting and compressing files. We created this platform to offer essential document and image manipulation tools without paywalls or restrictive limits.</p>
-    <p class="mb-4">We focus on privacy and efficiency. All uploaded files are deleted automatically within 1 hour after conversion.</p>
-</div>
+<article class="max-w-3xl w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100 page-prose">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">About PureFileConverter</h1>
+
+    <p>PureFileConverter is an independent, one-person project built and run by <strong>Omar G.</strong> in Florida, USA. I launched it in October 2026 because I was tired of "free" file converters that ask for an email address, add a watermark to your document, or let you convert one file and then demand a subscription. The idea is simple: open the tool you need, convert the file, download it, and move on with your day.</p>
+
+    <h2>What you can do here</h2>
+    <p>The site has {{ tools_count }} free tools, each on its own page:</p>
+    <ul>
+        <li><strong>Documents:</strong> PDF to Word, Word to PDF, Excel to PDF, CSV to Excel and PDF to JPG.</li>
+        <li><strong>PDF tools:</strong> merge, split, compress and rotate PDF files.</li>
+        <li><strong>Images:</strong> convert between JPG, PNG and WebP, resize, compress, turn iPhone HEIC photos into JPG, make a PDF from an image, remove a photo background and create QR codes.</li>
+        <li><strong>Audio and video:</strong> MP4 to MP3, WAV to MP3, AVI to MP4, MP3 to MP4, MP4 to GIF and GIF to MP4.</li>
+    </ul>
+    <p>There is no account, no watermark and no daily quota that forces you to pay. To keep the free service fair for everyone, uploads are limited to {{ max_upload_mb }} MB per file and each visitor can run about 20 conversions every 10 minutes.</p>
+
+    <h2>How the conversions work</h2>
+    <p>I don't build converters from scratch. Every tool runs on proven open-source software that professionals already trust. LibreOffice turns Word and Excel files into PDF. The pdf2docx library rebuilds PDFs as editable Word documents. PDFium, the PDF engine inside Google Chrome, renders PDF pages as JPG images, and pypdf merges, splits, rotates and compresses PDFs. Pillow and pillow-heif handle images, including iPhone HEIC photos, and FFmpeg handles audio and video.</p>
+    <p>The background remover works differently: it uses an open-source AI model that runs entirely <em>inside your web browser</em>, so the photo never leaves your device. The QR code generator only needs the text or link you type.</p>
+
+    <h2>How your files are treated</h2>
+    <p>Files travel to the server over an encrypted HTTPS connection and are stored under random names that nobody can guess. The file you upload is deleted as soon as the conversion finishes. The converted file is deleted right after you download it, or automatically within about 1 hour if you never do. I never open, read, share or sell your files. The <a href="/privacy">Privacy Policy</a> explains every detail, including the cookies used by analytics and advertising.</p>
+
+    <h2>Honest limits</h2>
+    <p>Free tools have trade-offs, and I would rather tell you up front. Scanned PDFs are pictures of text, so PDF to Word can't make them editable because the site does not run OCR (text recognition). Documents that use unusual fonts can shift slightly when converted, because the server substitutes similar fonts. Video conversions work best with short clips that fit under the {{ max_upload_mb }} MB limit. Each tool page lists its own limits and answers common questions, and the <a href="/blog">guides</a> explain the file formats in plain English.</p>
+
+    <h2>How the site is funded</h2>
+    <p>PureFileConverter is paid for by advertising from Google AdSense and by a few clearly marked Amazon affiliate links inside the guides. That income covers hosting and development, which keeps every tool free. There is no paid tier today, and the tools work the same for everyone.</p>
+
+    <h2>Get in touch</h2>
+    <p>If a conversion fails, a result looks wrong, or there's a tool you wish existed, I want to hear about it. Several of the newer tools, like Merge PDF and HEIC to JPG, were added because they are what people search for most. Use the <a href="/contact">contact page</a> and I'll read your message personally.</p>
+</article>
 {% endblock %}

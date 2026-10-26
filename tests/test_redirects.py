@@ -19,7 +19,7 @@ def test_internal_links_direct_200(client):
     for p in sitemap_paths(client):
         for h in re.findall(r'href="(/[^"#?]*)', client.get(p).text):
             hrefs.setdefault(h, p)
-    assert len(hrefs) > 150
+    assert len(hrefs) > 40
     for h, src in hrefs.items():
         r = client.get(h, headers=HTML)
         assert r.status_code == 200, f"{h} (linked from {src}) -> {r.status_code} {r.headers.get('location')}"

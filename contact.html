@@ -1,15 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl w-full bg-white p-8 rounded shadow text-gray-800">
-    <h1 class="text-3xl font-bold mb-4">Contact Us</h1>
-    <p class="mb-4">Have questions or feedback? We'd love to hear from you.</p>
-    <p class="mb-4">You can reach out to us directly at:</p>
-    <p class="text-xl font-medium text-blue-600 mb-6">
-        <a href="mailto:{{ contact_email|default('support@cleanfileconverter.com') }}">
-            {{ contact_email|default('support@cleanfileconverter.com') }}
-        </a>
-    </p>
-    <p class="text-gray-500 text-sm">We typically respond within 24-48 hours during business days.</p>
-</div>
+<article class="max-w-3xl w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100 page-prose">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Contact PureFileConverter</h1>
+
+    <p>PureFileConverter is run by one person, Omar G., and every message is read personally. The fastest way to reach me is by email:</p>
+    <p class="text-xl font-medium mb-6"><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
+    <p>I usually reply within two business days. Messages about broken tools are answered first.</p>
+
+    <h2>Reporting a problem with a conversion</h2>
+    <p>If a tool shows an error or the result looks wrong, these details help me find the cause quickly:</p>
+    <ul>
+        <li>The tool you used, for example "PDF to Word" or "Compress PDF".</li>
+        <li>The type and approximate size of the file (for example "a 4 MB scanned PDF with 12 pages").</li>
+        <li>The exact error message, if one appeared.</li>
+        <li>Your device and browser, for example "iPhone, Safari" or "Windows 11, Chrome".</li>
+    </ul>
+    <p>Please don't email documents that contain personal, financial or medical information. If a sample file is needed, I'll ask for one, and you can send a copy with the private parts removed.</p>
+
+    <h2>Other reasons to get in touch</h2>
+    <ul>
+        <li><strong>Tool requests:</strong> tell me which conversion you need. Popular requests get built first.</li>
+        <li><strong>Privacy requests:</strong> questions about your data or the rights described in the <a href="/privacy">Privacy Policy</a>.</li>
+        <li><strong>Copyright or abuse reports:</strong> include the page address and a short explanation.</li>
+        <li><strong>Corrections:</strong> if a guide on the <a href="/blog">blog</a> is wrong or out of date, I'll fix it.</li>
+    </ul>
+    <p>PureFileConverter will never ask you for a password, a payment or remote access to your computer. If someone contacts you claiming to be from this site and asks for any of those, it isn't me.</p>
+</article>
 {% endblock %}

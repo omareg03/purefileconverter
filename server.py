@@ -36,7 +36,7 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.exception_handlers import http_exception_handler as default_http_exception_handler
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.background import BackgroundTask
@@ -64,8 +64,8 @@ MULTIPART_OVERHEAD = 1024 * 1024                         # slack for multipart b
 DRAIN_CAP_BYTES = 64 * 1024 * 1024                       # drain oversize bodies up to this before replying 413
 
 SITE_URL = os.environ.get("SITE_URL", "https://purefileconverter.com").rstrip("/")
-CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "contact@purefileconverter.com")
-LEGAL_UPDATED = "October 6, 2026"
+CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "support@purefileconverter.com")  # same as render.yaml
+LEGAL_UPDATED = "October 26, 2026"
 
 FILE_TTL_SECONDS = 3600                                  # converted files are deleted after 1 hour
 SWEEP_INTERVAL_SECONDS = 60
@@ -1011,21 +1011,29 @@ LEGAL_PAGES = ["privacy", "terms", "contact", "about"]
 # --------------------------------------------------------------------------- #
 
 from blog_data import BLOG_ARTICLES, BLOG_CATEGORIES
+from blog_redirects import REMOVED_ARTICLE_REDIRECTS
+from tool_content import TOOL_GUIDES
+
+for _slug, _guide in TOOL_GUIDES.items():  # long-form, tool-specific help rendered under each converter
+    _article = _guide.get("article")
+    TOOLS_CONFIG[_slug]["guide"] = {**_guide, "article_title": BLOG_ARTICLES[_article]["title"] if _article else None}
 
 def blog_article_jsonld(article: dict) -> list:
     url = f"{SITE_URL}/blog/{article['slug']}"
+    image = next((b["src"] for b in article["content_blocks"] if b["type"] == "image"), "/static/og-image.png")
     article_schema = {
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": article["title"],
         "description": article["description"],
         "url": url,
-        "datePublished": "2026-10-11",
-        "dateModified": "2026-10-11",
+        "image": SITE_URL + image,
+        "datePublished": article["date_published"],
+        "dateModified": article["date_modified"],
         "author": {
-            "@type": "Organization",
-            "name": "PureFileConverter",
-            "url": SITE_URL,
+            "@type": "Person",
+            "name": "Omar G.",
+            "url": SITE_URL + "/about",
         },
         "publisher": {
             "@type": "Organization",
@@ -1321,21 +1329,8 @@ def llms_txt():
         f"- [GIF to MP4]({SITE_URL}/gif-to-mp4): Convert animated GIFs to small H.264 MP4 videos (first 30 s, up to 720 px).\n\n"
         f"## Blog & Guides\n"
         f"- [Blog]({SITE_URL}/blog): File conversion guides and tutorials.\n"
-        f"- [How to Convert PDF to Word]({SITE_URL}/blog/how-to-convert-pdf-to-word): Step-by-step guide.\n"
-        f"- [How to Convert Word to PDF]({SITE_URL}/blog/how-to-convert-word-to-pdf): Free online guide.\n"
-        f"- [How to Convert CSV to Excel]({SITE_URL}/blog/how-to-convert-csv-to-excel): Data conversion guide.\n"
-        f"- [How to Resize Images Online]({SITE_URL}/blog/how-to-resize-images-online): Image resizing guide.\n"
-        f"- [How to Compress JPG Images]({SITE_URL}/blog/how-to-compress-jpg-images): Compression guide.\n"
-        f"- [How to Convert PNG to JPG]({SITE_URL}/blog/how-to-convert-png-to-jpg): Format conversion guide.\n"
-        f"- [How to Extract Audio from MP4]({SITE_URL}/blog/how-to-extract-audio-from-mp4): Audio extraction guide.\n"
-        f"- [How to Convert WAV to MP3]({SITE_URL}/blog/how-to-convert-wav-to-mp3): Audio compression guide.\n"
-        f"- [How to Convert AVI to MP4]({SITE_URL}/blog/how-to-convert-avi-to-mp4): Video conversion guide.\n"
-        f"- [How to Convert MP3 to MP4]({SITE_URL}/blog/how-to-convert-mp3-to-mp4): Audio to video guide.\n"
-        f"- [Best Free File Converters 2026]({SITE_URL}/blog/best-free-file-converters-2026): Ranked comparison.\n"
-        f"- [iLovePDF vs Smallpdf vs PureFileConverter]({SITE_URL}/blog/ilovepdf-vs-smallpdf-vs-purefileconverter): Feature comparison.\n"
-        f"- [Why PDF to Word Loses Formatting]({SITE_URL}/blog/why-pdf-to-word-loses-formatting): Troubleshooting guide.\n"
-        f"- [What Is WebP]({SITE_URL}/blog/what-is-webp-why-use-it): Image format guide.\n"
-        f"- [Is It Safe to Convert Files Online]({SITE_URL}/blog/is-it-safe-to-convert-files-online): Privacy guide.\n\n"
+        + "".join(f"- [{a['title']}]({SITE_URL}/blog/{slug}): {a['description']}\n" for slug, a in BLOG_ARTICLES.items())
+        + "\n"
         f"## Site Pages\n"
         f"- [About]({SITE_URL}/about): About PureFileConverter.\n"
         f"- [Privacy Policy]({SITE_URL}/privacy): How files are handled and deleted.\n"
@@ -1524,7 +1519,7 @@ def convert_avi_to_mp4(file: UploadFile = File(...)):
     with conversion(out_path, src, heavy=True):
         video = VideoFileClip(src)
         try:
-            video.write_videofile(out_path, logger=None)
+            video.write_videofile(out_path, audio_codec="aac", logger=None)  # AAC: the MP4 standard (moviepy defaults to MP3)
         finally:
             video.close()
     return {"file_id": file_id, "filename": f"{safe_stem(file.filename)}.mp4"}
@@ -1539,7 +1534,7 @@ def convert_mp3_to_mp4(file: UploadFile = File(...)):
         clip = None
         try:
             clip = ColorClip(size=(640, 480), color=(0, 0, 0), duration=audio.duration).with_audio(audio)
-            clip.write_videofile(out_path, fps=1, logger=None)
+            clip.write_videofile(out_path, fps=1, audio_codec="aac", logger=None)
         finally:
             if clip is not None:
                 clip.close()
@@ -1925,6 +1920,8 @@ async def blog_index(request: Request):
 
 @_page("/blog/{article_slug}")
 async def blog_article(request: Request, article_slug: str):
+    if article_slug in REMOVED_ARTICLE_REDIRECTS:  # pruned thin articles: one permanent hop to their tool
+        return RedirectResponse(SITE_URL + REMOVED_ARTICLE_REDIRECTS[article_slug], status_code=301)
     if article_slug not in BLOG_ARTICLES:
         raise HTTPException(status_code=404, detail="Article not found")
     article = BLOG_ARTICLES[article_slug]

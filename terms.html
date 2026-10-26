@@ -1,17 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl w-full bg-white p-8 rounded shadow text-gray-800">
-    <h1 class="text-3xl font-bold mb-4">Terms of Service</h1>
-    <p class="mb-4">By using PureFileConverter, you agree to these terms:</p>
-    
-    <h2 class="text-2xl font-semibold mb-2 mt-6">1. Usage</h2>
-    <p class="mb-4">PureFileConverter is provided "as is" and free of charge. You agree not to use the service for illegal or unauthorized purposes.</p>
+<article class="max-w-3xl w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100 page-prose">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Terms of Service</h1>
+    <p class="text-sm text-gray-500 mb-6">Last updated: {{ legal_updated }}</p>
 
-    <h2 class="text-2xl font-semibold mb-2 mt-6">2. Limitation of Liability</h2>
-    <p class="mb-4">We do not guarantee that the service will be uninterrupted or error-free. PureFileConverter will not be liable for any damages arising from the use of this service.</p>
+    <p>These terms apply to your use of PureFileConverter (purefileconverter.com), a free online file conversion service operated by Omar G. in Florida, USA. By using the site, you agree to them. If you don't agree, please don't use the site.</p>
 
-    <h2 class="text-2xl font-semibold mb-2 mt-6">3. Changes to Terms</h2>
-    <p class="mb-4">We reserve the right to modify these terms at any time. Your continued use of the service signifies your acceptance of our updated terms.</p>
-</div>
+    <h2>1. The service</h2>
+    <p>PureFileConverter offers free tools to convert, compress, merge, split, rotate and edit files in your web browser. No account is needed. The tools, their limits and the formats they support may change over time as the site improves.</p>
+
+    <h2>2. Your files and your rights</h2>
+    <ul>
+        <li>Only upload files that you own or have permission to use and convert.</li>
+        <li>You keep all rights to your files. PureFileConverter claims no ownership of anything you upload or create.</li>
+        <li>By uploading a file, you allow the service to process it for the single purpose of performing the conversion you asked for.</li>
+        <li>Uploaded files are deleted as soon as the conversion finishes, and converted files are deleted after download or automatically within about 1 hour. Download your result promptly and always keep your own copy of the original, because deleted files can't be recovered.</li>
+    </ul>
+
+    <h2>3. Acceptable use</h2>
+    <p>You agree not to:</p>
+    <ul>
+        <li>upload illegal content, malware, or material that infringes someone else's copyright, privacy or other rights;</li>
+        <li>use bots, scripts or other automated means to send large numbers of conversions, or try to get around the fair-use limits;</li>
+        <li>attempt to break, overload, probe or gain unauthorized access to the site or its servers;</li>
+        <li>use the service in any way that breaks applicable law.</li>
+    </ul>
+    <p>Access may be limited or blocked for anyone who misuses the service.</p>
+
+    <h2>4. Limits</h2>
+    <p>To keep the service free and fast for everyone, uploads are limited to {{ max_upload_mb }} MB per file, and each visitor can run about 20 conversions every 10 minutes. Some tools have extra limits that are explained on their pages, such as the number of PDF pages or the length of a video clip.</p>
+
+    <h2>5. Accuracy of results</h2>
+    <p>Conversions are produced automatically by open-source software. Most results are accurate, but layouts, fonts and image quality can differ from the original, especially for complex documents. Check every converted file before you rely on it, and don't use the service as the only copy of important records.</p>
+
+    <h2>6. Ads, affiliate links and third-party sites</h2>
+    <p>The site shows ads served by Google and includes a few clearly marked Amazon affiliate links. As an Amazon Associate I earn from qualifying purchases. Ads and links may lead to websites run by others. Those sites have their own terms and privacy policies, and PureFileConverter is not responsible for their content, products or services.</p>
+
+    <h2>7. Intellectual property</h2>
+    <p>The site's design, text, guides and logo belong to PureFileConverter and may not be copied or republished without permission. You can quote short excerpts with a link back. The open-source software that powers the conversions remains under its own licenses.</p>
+
+    <h2>8. No warranty</h2>
+    <p>The service is provided "as is" and "as available", without warranties of any kind, whether express or implied. Uninterrupted, error-free operation can't be guaranteed, and the service may be changed, paused or discontinued at any time.</p>
+
+    <h2>9. Limitation of liability</h2>
+    <p>To the fullest extent permitted by law, PureFileConverter and its operator are not liable for any indirect, incidental or consequential damages, or for any loss of data, files, profits or business, arising from your use of the service or your inability to use it. Because the service is free, the total liability for any claim is limited to zero US dollars where the law allows.</p>
+
+    <h2>10. Copyright complaints</h2>
+    <p>If you believe content on this site infringes your copyright, email the page address, a description of the work and your contact details to <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>. Valid complaints are handled promptly.</p>
+
+    <h2>11. Governing law</h2>
+    <p>These terms are governed by the laws of the State of Florida, USA, without regard to its conflict-of-law rules.</p>
+
+    <h2>12. Changes to these terms</h2>
+    <p>These terms may be updated from time to time. When they change, the "Last updated" date above changes too. Continuing to use the site after an update means you accept the new terms.</p>
+
+    <h2>13. Contact</h2>
+    <p>Questions about these terms? Email <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>
+</article>
 {% endblock %}

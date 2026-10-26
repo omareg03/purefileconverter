@@ -1,19 +1,58 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl w-full bg-white p-8 rounded shadow text-gray-800">
-    <h1 class="text-3xl font-bold mb-4">Privacy Policy</h1>
-    <p class="mb-4">At PureFileConverter, your privacy is our priority. Here is how we handle your data:</p>
-    
-    <h2 class="text-2xl font-semibold mb-2 mt-6">1. File Deletion</h2>
-    <p class="mb-4">We do not store your files permanently. All uploaded and converted files are automatically and permanently deleted from our servers within 1 hour. We do not inspect, copy, or share your files with any third parties.</p>
+<article class="max-w-3xl w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100 page-prose">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+    <p class="text-sm text-gray-500 mb-6">Last updated: {{ legal_updated }}</p>
 
-    <h2 class="text-2xl font-semibold mb-2 mt-6">2. Cookies and Analytics</h2>
-    <p class="mb-4">We use cookies to improve your experience. We may also use Google Analytics to understand how our site is used.</p>
+    <p>This policy explains what information PureFileConverter (purefileconverter.com) collects when you use the site, why, and the choices you have. The site is operated by Omar G. in Florida, USA. If you have a question about this policy, email <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>
 
-    <h2 class="text-2xl font-semibold mb-2 mt-6">3. Third-Party Advertising (Google AdSense)</h2>
-    <p class="mb-4">We use Google AdSense to serve ads on our site. Third-party vendors, including Google, use cookies to serve ads based on your prior visits to our website or other websites.</p>
-    <p class="mb-4">Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to our sites and/or other sites on the Internet.</p>
-    <p class="mb-4">You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" class="text-blue-600 hover:underline">Ads Settings</a>.</p>
-</div>
+    <h2>1. The files you convert</h2>
+    <ul>
+        <li>Files are sent to the server over an encrypted HTTPS connection and saved temporarily under a random name.</li>
+        <li>The file you upload is deleted as soon as the conversion finishes. The converted file is deleted right after you download it, or automatically within about 1 hour if you don't.</li>
+        <li>Nobody opens, reads, copies, shares or sells your files, and they are never used to train AI models.</li>
+        <li>The <strong>Remove Background</strong> tool runs entirely in your browser, so your photo is never uploaded. The first time you use it, your browser downloads the open-source AI model from jsDelivr and Hugging Face. Those providers receive an ordinary web request (including your IP address) but never your photo.</li>
+        <li>The <strong>QR Code Generator</strong> sends only the text or link you type, so the server can draw the image. The image is then handled like any other converted file.</li>
+    </ul>
+
+    <h2>2. Information collected automatically</h2>
+    <p>There are no user accounts and no sign-up forms, and PureFileConverter's own code sets no cookies. The cookies you may see on this site come from Google Analytics and Google's advertising, described in sections 3 and 4. Some information is also collected automatically:</p>
+    <ul>
+        <li><strong>Server logs.</strong> Like almost every website, the hosting provider (Render, with servers in the United States) records standard request details: IP address, date and time, the page requested and your browser type. They are used only for security, abuse prevention and troubleshooting, and are kept for a limited period.</li>
+        <li><strong>Fair-use limit.</strong> To keep the free service available to everyone, the server counts conversions per IP address. That count lives only in memory, for up to 10 minutes, and is never written to disk.</li>
+    </ul>
+
+    <h2>3. Google Analytics</h2>
+    <p>The site uses Google Analytics 4 to understand how many people visit, which tools they use and which pages are useful. Google Analytics uses cookies and collects information such as the pages you view, your approximate location, and your device and browser type. File names and file contents are never sent to Google Analytics. You can read <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from sites that use its services</a>, and you can block Google Analytics in your browser with the <a href="https://tools.google.com/dlpage/gaoptout">Google Analytics opt-out add-on</a>.</p>
+
+    <h2>4. Advertising (Google AdSense)</h2>
+    <p>The site is funded by ads served by Google AdSense. Ads appear only on content pages, never on download screens or error pages.</p>
+    <ul>
+        <li>Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this website or other websites.</li>
+        <li>Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to this site and/or other sites on the Internet.</li>
+        <li>You may opt out of personalized advertising by visiting Google's <a href="https://adssettings.google.com">Ads Settings</a>. You can also opt out of some other vendors' use of cookies for personalized advertising at <a href="https://www.aboutads.info/choices">www.aboutads.info/choices</a>, or, in Europe, at <a href="https://www.youronlinechoices.eu">www.youronlinechoices.eu</a>.</li>
+        <li>Google may allow other certified ad vendors to show ads on the site. Those vendors may also use cookies, and you can manage them with the same opt-out tools.</li>
+        <li>If you visit from the European Economic Area, the United Kingdom or Switzerland, a Google-certified consent message asks for your permission before advertising cookies are used to personalize ads. You can change your choice at any time.</li>
+    </ul>
+    <p>Learn more in <a href="https://policies.google.com/technologies/ads">how Google uses cookies in advertising</a>.</p>
+
+    <h2>5. Amazon affiliate links</h2>
+    <p>PureFileConverter is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. As an Amazon Associate I earn from qualifying purchases. A few guides contain clearly labeled links to products on Amazon. If you click one, Amazon may set its own cookies to record the referral, under <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GX7NJQ4ZB8MHFRNJ">Amazon's Privacy Notice</a>. I only see anonymous commission reports, never who bought anything.</p>
+
+    <h2>6. Emails you send</h2>
+    <p>If you email the site, your address and message are used only to reply to you. They are not added to any mailing list or shared with anyone, and they are deleted when they are no longer needed.</p>
+
+    <h2>7. Children</h2>
+    <p>The site is not directed at children under 13, and I do not knowingly collect personal information from children. If you believe a child has sent personal information, email me and it will be deleted.</p>
+
+    <h2>8. Your choices and rights</h2>
+    <p>You can block or delete cookies in your browser settings at any time. The converter tools keep working without cookies, though the ads you see may become less relevant. Depending on where you live (for example in the European Union, the United Kingdom or California), you may have the right to access, correct or delete personal information, to object to its use, or to opt out of its "sale" or "sharing" for targeted advertising. Because there are no accounts and files are deleted within about an hour, the site itself holds very little information that can identify you. To make a request, email <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>. For information held by Google, use Google's own tools, such as Ads Settings.</p>
+
+    <h2>9. Security</h2>
+    <p>The whole site is served over HTTPS with modern security headers. Files get random names, are processed in isolation and are deleted automatically. No system is perfectly secure, so please avoid uploading highly sensitive documents to any online service, including this one.</p>
+
+    <h2>10. Changes to this policy</h2>
+    <p>If the site starts collecting different information, this page will be updated first and the "Last updated" date above will change. The current version always applies.</p>
+</article>
 {% endblock %}

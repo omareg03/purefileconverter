@@ -12,7 +12,7 @@ from PIL import Image
 
 import server
 from blog_data import BLOG_ARTICLES
-from conftest import sitemap_paths
+from conftest import assert_article_cta_or_redirect, sitemap_paths
 
 V13_TOOLS = ["remove-background", "qr-code-generator", "gif-to-mp4"]
 
@@ -56,8 +56,8 @@ def test_tool_count_and_sitemap():
     assert len(server.TOOLS_CONFIG) == 22
 
 
-def test_sitemap_has_178_direct_urls(client):
-    assert len(sitemap_paths(client)) == 178
+def test_sitemap_has_45_direct_urls(client):
+    assert len(sitemap_paths(client)) == 45  # v1.4: 133 thin articles pruned
 
 
 def test_browser_tools_do_not_claim_server_upload(client):
@@ -182,18 +182,15 @@ def test_gif_to_mp4_rejects_garbage_and_cleans_up(client):
     ("how-to-convert-gif-to-mp4", "/gif-to-mp4"),
 ])
 def test_v13_articles_point_to_new_tools(client, article, tool):
-    assert BLOG_ARTICLES[article]["tool_link"] == tool
-    html = client.get(f"/blog/{article}").text
-    assert f'href="{tool}"' in html
-    assert "Use the free Image Converter" not in html
+    assert_article_cta_or_redirect(client, article, tool)
 
 
-def test_every_article_has_a_tagged_affiliate_link():
-    for slug, a in BLOG_ARTICLES.items():
-        links = [b["link"] for b in a["content_blocks"] if b["type"] == "affiliate"]
-        assert links, slug
-        for link in links:
-            assert link.startswith("https://www.amazon.com/s?k=") and link.endswith("&tag=purefileconve-20"), link
+def test_affiliate_links_are_tagged_search_links():
+    # v1.4: affiliate boxes only where genuinely relevant (AdSense: affiliate content must stay a minor part).
+    links = [b["link"] for a in BLOG_ARTICLES.values() for b in a["content_blocks"] if b["type"] == "affiliate"]
+    assert links
+    for link in links:
+        assert link.startswith("https://www.amazon.com/s?k=") and link.endswith("&tag=purefileconve-20"), link
 
 
 # ---------------- Social share card ----------------

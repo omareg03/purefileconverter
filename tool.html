@@ -114,6 +114,27 @@
                 <h2 class="text-xl font-bold text-gray-800 mb-3">About the free {{ tool.title }} tool</h2>
                 <p class="text-gray-600 leading-relaxed">{{ tool.intro }}</p>
             </section>
+
+            {% if tool.guide %}
+            <!-- Long-form help: how to use it, what happens to the file, honest limits -->
+            <section class="mt-8 bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">How to use the {{ tool.title }} tool</h2>
+                <div class="page-prose">
+                    <ol>
+                        {% for step in tool.guide.steps %}<li>{{ step }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 mb-3 mt-6">Good to know</h2>
+                <div class="page-prose">
+                    {% for para in tool.guide.body %}<p>{{ para }}</p>
+                    {% endfor %}
+                    {% if tool.guide.article %}
+                    <p>Want the full walkthrough? Read the guide: <a href="/blog/{{ tool.guide.article }}">{{ tool.guide.article_title }}</a>.</p>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
             
             {% if related_tools %}
             <!-- Related Tools: internal linking for SEO -->

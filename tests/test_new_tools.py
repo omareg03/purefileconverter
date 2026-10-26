@@ -10,7 +10,7 @@ from PIL import Image
 
 import server
 from blog_data import BLOG_ARTICLES
-from conftest import make_pdf
+from conftest import assert_article_cta_or_redirect, make_pdf
 
 NEW_TOOLS = ["pdf-to-jpg", "heic-to-jpg", "mp4-to-gif"]
 
@@ -149,10 +149,7 @@ def test_llms_txt_counts_match_reality(client):
     ("how-to-convert-mp4-to-gif", "/mp4-to-gif"),
 ])
 def test_blog_ctas_point_to_matching_tool(client, article, tool):
-    assert BLOG_ARTICLES[article]["tool_link"] == tool
-    html = client.get(f"/blog/{article}").text
-    assert f'href="{tool}"' in html
-    assert "Use the free Image Converter" not in html and "Use the free AVI to MP4" not in html
+    assert_article_cta_or_redirect(client, article, tool)
 
 
 def test_pdf_to_jpg_huge_page_is_downscaled_not_oom(client):

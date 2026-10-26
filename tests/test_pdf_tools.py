@@ -9,7 +9,7 @@ from pypdf import PdfReader, PdfWriter
 
 import server
 from blog_data import BLOG_ARTICLES
-from conftest import make_pdf
+from conftest import assert_article_cta_or_redirect, make_pdf
 
 PDF_TOOLS = ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf"]
 
@@ -212,10 +212,7 @@ def test_css_is_cache_busted(client):
     ("best-free-pdf-compressors", "/compress-pdf"),
 ])
 def test_pdf_articles_point_to_pdf_tools(client, article, tool):
-    assert BLOG_ARTICLES[article]["tool_link"] == tool
-    html = client.get(f"/blog/{article}").text
-    assert f'href="{tool}"' in html
-    assert "Use the free PDF to Word Converter" not in html and "Use the free Image Compressor" not in html
+    assert_article_cta_or_redirect(client, article, tool)
 
 
 def _bomb_pdf() -> bytes:

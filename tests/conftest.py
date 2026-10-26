@@ -34,6 +34,19 @@ def make_pdf(pages: int) -> bytes:
     return buf.getvalue()
 
 
+def assert_article_cta_or_redirect(client, article, tool):
+    """Live article: its CTA links the matching tool. Pruned article (v1.4): it 301s to that tool."""
+    from blog_data import BLOG_ARTICLES
+    from blog_redirects import REMOVED_ARTICLE_REDIRECTS
+    if article in BLOG_ARTICLES:
+        assert BLOG_ARTICLES[article]["tool_link"] == tool
+        assert f'href="{tool}"' in client.get(f"/blog/{article}").text
+    else:
+        assert REMOVED_ARTICLE_REDIRECTS[article] == tool
+        r = client.get(f"/blog/{article}")
+        assert r.status_code == 301 and r.headers["location"] == server.SITE_URL + tool
+
+
 def sitemap_paths(client):
     import re
     xml = client.get("/sitemap.xml").text

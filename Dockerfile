@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-calc \
     ffmpeg \
     fonts-liberation \
+    fonts-crosextra-carlito \
+    fonts-crosextra-caladea \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

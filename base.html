@@ -38,7 +38,7 @@
 
     <link href="/static/tailwind.css?v={{ asset_version }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    {% if adsense_client_id %}
+    {% if adsense_client_id and not noindex %}{# no ads on 404/download screens: AdSense bans ads on screens without publisher content #}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}" crossorigin="anonymous"></script>
     {% endif %}
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QL5VKVW6P7"></script>
@@ -51,6 +51,16 @@
     {% for block in jsonld_blocks or [] %}
     <script type="application/ld+json">{{ block|safe }}</script>
     {% endfor %}
+    <style>
+    .page-prose { line-height: 1.75; color: #374151; }
+    .page-prose h2 { font-size: 1.375rem; font-weight: 700; color: #1f2937; margin: 1.75rem 0 0.6rem; }
+    .page-prose h3 { font-size: 1.125rem; font-weight: 600; color: #1f2937; margin: 1.25rem 0 0.4rem; }
+    .page-prose p { margin-bottom: 1rem; }
+    .page-prose ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    .page-prose ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+    .page-prose li { margin-bottom: 0.4rem; }
+    .page-prose a { color: #2563eb; text-decoration: underline; }
+    </style>
     {% block head_extra %}{% endblock %}
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
@@ -86,6 +96,7 @@
             <a href="/contact" class="hover:text-blue-600">Contact</a>
         </div>
         &copy; {{ current_year }} PureFileConverter. Built for fast, free utility.
+        <p class="mt-2 text-xs text-gray-400">As an Amazon Associate I earn from qualifying purchases. Some guides contain clearly marked affiliate links.</p>
     </footer>
     {% block scripts %}{% endblock %}
 </body>

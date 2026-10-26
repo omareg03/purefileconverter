@@ -12,6 +12,7 @@
 .article-content .lead { font-size: 1.125rem; color: #6b7280; margin-bottom: 1.5rem; }
 .article-content .callout { background: #eff6ff; border-left: 4px solid #2563eb; padding: 1rem 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; }
 .article-content .callout p { margin: 0; color: #1e40af; }
+.byline a { color: #2563eb; text-decoration: underline; }
 </style>
 {% endblock %}
 
@@ -19,8 +20,10 @@
 <div class="article-content w-full">
     <a href="/blog" class="text-blue-600 hover:underline mb-4 inline-block text-sm font-medium"><i class="fa-solid fa-arrow-left mr-1"></i> Blog</a>
 
-    <div class="flex items-center gap-3 mb-2 text-sm text-gray-500">
+    <div class="flex items-center gap-3 mb-2 text-sm text-gray-500 flex-wrap">
         <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">{{ category }}</span>
+        <span class="byline">By <a href="/about">Omar G.</a></span>
+        <span>·</span>
         <span>{{ published }}</span>
         <span>·</span>
         <span>{{ reading_time }} min read</span>
@@ -62,6 +65,7 @@
                     <div class="flex-grow">
                         <p class="font-bold text-gray-800">{{ blk.title }}</p>
                         <p class="text-sm text-gray-600">{{ blk.description }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Affiliate link: As an Amazon Associate I earn from qualifying purchases, at no extra cost to you.</p>
                     </div>
                     <a href="{{ blk.link }}" target="_blank" rel="nofollow sponsored noopener" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2 rounded-lg whitespace-nowrap text-sm transition shadow-md">View Price</a>
                 </div>
