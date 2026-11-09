@@ -90,7 +90,7 @@ def _normalize_adsense_id(raw: str) -> str:
     return ""
 
 
-ADSENSE_CLIENT_ID = _normalize_adsense_id(os.environ.get("ADSENSE_CLIENT_ID", ""))
+ADSENSE_CLIENT_ID = _normalize_adsense_id(os.environ.get("ADSENSE_CLIENT_ID", "ca-pub-8373498789989542"))
 
 TEMP_DIR = os.path.join(tempfile.gettempdir(), "cleanfileconverter")
 os.makedirs(TEMP_DIR, exist_ok=True)
